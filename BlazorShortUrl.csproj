@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-BlazorShortUrl-8d0f8e59-5673-4928-9ad2-944dfe50a8c4</UserSecretsId>
+        <ContainerRepository>dotnet-blazor-shorturl</ContainerRepository>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="DotNetEnv" Version="3.1.1" />
+
+        <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid" Version="9.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="9.0.0" />
+
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
+
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0"/>
+
+        <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="9.0.1" />
+
+        <PackageReference Include="NSwag.AspNetCore" Version="14.2.0" />
+
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.Expressions" Version="5.0.0" />
+        <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
+        <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>

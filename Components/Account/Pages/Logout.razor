@@ -1,0 +1,29 @@
+@page "/Account/Logout"
+
+@using Microsoft.AspNetCore.Identity
+@using BlazorShortUrl.Data
+
+@inject SignInManager<AppUser> SignInManager
+@inject NavigationManager Navigation
+@inject ILogger<Logout> Logger
+
+<h3>Logout</h3>
+
+@code {
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userName = HttpContext.User.Identity?.Name;
+        
+        if (SignInManager.IsSignedIn(HttpContext.User))
+        {
+            Logger.LogInformation($"User logout initiated for \"{userName}\"");
+            await SignInManager.SignOutAsync();
+            Logger.LogInformation($"User \"{userName}\" successfully logged out.");
+        }
+
+
+        Navigation.NavigateTo("/");
+    }
+}

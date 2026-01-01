@@ -1,0 +1,302 @@
+@page "/shorturl-ssr"
+@attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
+
+@* @using AutoMapper *@
+@using System.Security.Claims
+@using System.Text.RegularExpressions
+@using BlazorShortUrl.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using BlazorShortUrl.Data
+@using BlazorShortUrl.Services
+@using DotNetEnv
+
+@implements IDisposable
+
+@inject PersistentComponentState ApplicationState
+@inject IShortUrlService ShortUrlService
+@* @inject IMapper AutoMapper *@
+@* @inject NavigationManager Navigator *@
+@inject UserManager<AppUser> UserManager
+@* @inject RoleManager<AppRole> RoleManager *@
+@* @inject AuthenticationStateProvider AuthenticationStateProvider *@
+
+<PageTitle>ShortUrl (SSR)</PageTitle>
+
+<h1>ShortUrl (SSR)</h1>
+
+@if (_shortUrls == null)
+{
+    <p>No ShortUrls found.</p>
+}
+else
+{
+    <table class="table">
+    <thead>
+        <tr>
+            <th>UserName</th>
+            <th>Url</th>
+            <th>TinyUrl</th>
+            <th>Description</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="editRow" style="display:@_editRowStyle">
+            <td>Edit</td>
+            <td>
+                <input @bind="_editShortUrl.Url" />
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;
+                <input @bind="_editShortUrl.Description" />&nbsp;
+            </td>
+            <td class="text-center">
+                <button class="btn btn-success" @onclick="SaveUrl">
+                    Save
+                </button>
+                <button class="btn btn-danger" @onclick="CancelSaveUrl">
+                    Cancel
+                </button>
+            </td>
+        </tr>
+        @foreach (var shortUrl in _shortUrls)
+            {
+                <tr>
+                    <td>@shortUrl.UserName</td>
+                    <td>
+                        <a href="@shortUrl.Url">
+                            @if (@shortUrl.Url.Length > 24) 
+                            {
+                                @shortUrl.Url.Substring(0, 24)
+                            }
+                            else
+                            {
+                                @shortUrl.Url
+                            }
+                        </a>
+                    </td>
+                    <td>
+                        <a href="@shortUrl.TinyUrl">@shortUrl.TinyUrl</a>
+                    </td>
+                    <td>
+                       @shortUrl.Description
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-warning" @onclick="@(() => EditUrl(shortUrl.Id))">
+                            Edit
+                        </button>
+                        <button class="btn btn-danger" @onclick="@(async () => await DeleteUrl(shortUrl.Id))">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+            <tr id="addRow">
+                <td>&nbsp;</td>
+                <td>
+                    <input @bind="_newUrl" placeholder="New Url" />
+                </td>
+                <td>
+                    <input @bind="_newUrlDescription" placeholder="Description" />&nbsp;
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-success" @onclick="AddUrl">Add</button>
+                </td>
+            </tr>
+            <tr class="text-danger">
+                @_message
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthStateTask { get; set; }
+
+    private ShortUrlDto _editShortUrl = new();
+    private string _editRowStyle = "none";
+    private string _newUrl = string.Empty;
+    private string _newUrlDescription = string.Empty;
+    private string? _userId = string.Empty;
+    private string? _userName = string.Empty;
+    private List<ShortUrlDto>? _shortUrls;
+    private PersistingComponentStateSubscription _persistingState;
+    private string _message = string.Empty;
+
+    public bool IsValidUri(string uri)
+    {
+        Uri? validatedUri;
+
+        if (!Uri.TryCreate(uri, UriKind.RelativeOrAbsolute, out validatedUri))
+        {
+            Console.WriteLine("Invalid Uri");
+            return false;
+        }
+
+        if (!Regex.IsMatch(uri, "^https?://", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
+        {
+            Console.WriteLine("Uri is missing prefix: http//");
+            return false;
+        }
+
+        Console.WriteLine("Uri is valid");
+
+        return true;
+    }
+
+    private async Task GetAll()
+    {
+        // var user = await UserManager.FindByIdAsync(sUserId);
+        if (_userId is not null)
+        {
+            var shortUrlTemp = await ShortUrlService.GetAllAsync(_userId);
+            var queryShortUrls =
+                from x in shortUrlTemp
+                select new ShortUrlDto()
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    UserName = _userName,
+                    Url = x.Url,
+                    TinyUrl = x.TinyUrl,
+                    Description = x.Description,
+                };
+            _shortUrls = queryShortUrls.ToList();
+        }
+    }
+
+    private Task PersistData()
+    {
+        ApplicationState.PersistAsJson(nameof(_shortUrls), _shortUrls);
+        return Task.CompletedTask;
+    }
+
+    private void EditUrl(int id)
+    {
+        if (_shortUrls is not null)
+        {
+            _editShortUrl = _shortUrls.Single(i => i.Id == id);
+            _editRowStyle = "table-row";
+        }
+    }
+
+    private async Task AddUrl()
+    {
+        if (!string.IsNullOrEmpty(_newUrl))
+        {
+            var shortUrlDto = new ShortUrlDto { Url = _newUrl, Description = _newUrlDescription};
+            shortUrlDto.UserId = _userId;
+
+            _message = string.Empty;
+
+            if (!IsValidUri(shortUrlDto.Url))
+            {
+                _message = "URL is invalid.";
+                return;
+            }
+
+            try
+            {
+                // Create ShortUrl
+                var newUrl = await ShortUrlService.PostUrlAsync(shortUrlDto);
+                _newUrl = string.Empty;
+                _newUrlDescription = string.Empty;
+
+                newUrl.TinyUrl = shortUrlDto.GetUrlChunk(newUrl.Id);
+
+                // Update new record with generated TinyUrl
+                await ShortUrlService.PutUrlAsync(newUrl);
+
+                await GetAll();
+                _editRowStyle = "none";
+            }
+            catch (Exception e)
+            {
+                _message = e.Message;
+            }
+        }
+    }
+
+    private async Task SaveUrl()
+    {
+        _message = string.Empty;
+
+        try
+        {
+            if (_editShortUrl.Url is null || !IsValidUri(_editShortUrl.Url))
+            {
+                _message = "URL is invalid.";
+                return;
+            }
+
+            await ShortUrlService.PutUrlAsync(_editShortUrl);
+
+            await GetAll();
+            _editRowStyle = "none";
+        }
+        catch (Exception e)
+        {
+            _message = e.Message;
+        }
+    }
+
+    private void CancelSaveUrl()
+    {
+        _editRowStyle = "none";
+        _message = string.Empty;
+    }
+
+
+    private async Task DeleteUrl(int id)
+    {
+        try
+        {
+            await ShortUrlService.DeleteUrlAsync(id);
+            await GetAll();
+            _editRowStyle = "none";
+        }
+        catch (Exception e)
+        {
+            _message = e.Message;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _persistingState = ApplicationState.RegisterOnPersisting(PersistData);
+        ClaimsPrincipal? user;
+
+        if (AuthStateTask is not null)
+        {
+            user = (await AuthStateTask).User;
+
+            if (user.Identity is not null && user.Identity.IsAuthenticated)
+            {
+                var currentUser = await UserManager.GetUserAsync(user);
+                if (currentUser is not null)
+                {
+                    _userId = currentUser.Id;
+                    _userName = currentUser.UserName;
+                }
+            }
+        }
+
+        if (!ApplicationState.TryTakeFromJson<List<ShortUrlDto>>(nameof(_shortUrls), out var restoredData))
+        {
+            await GetAll();
+        }
+        else
+        {
+            _shortUrls = restoredData!;
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        _persistingState.Dispose();
+    }
+}

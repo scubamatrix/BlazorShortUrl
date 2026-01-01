@@ -1,0 +1,252 @@
+﻿@page "/roles"
+@attribute [Authorize(Roles = "Admin")]
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using System.Security.Claims
+@using System.Text.Json
+@using BlazorShortUrl.Helpers
+@using Serilog
+
+@inject ILogger<Roles> Logger
+@inject IHttpClientFactory HttpClientFactory
+@inject IHttpClientHelper HttpClientHelper
+@inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime
+
+<PageTitle>Roles</PageTitle>
+
+<h1>Role List</h1>
+
+<button class="btn btn-primary mb-1" @onclick="NewRoleModal">New</button>
+
+<QuickGrid Class="table table-striped table-bordered" ItemsProvider="@rolesProvider" @ref="rolesGrid">
+    <PropertyColumn Property="@(r => r.Id)" />
+    <PropertyColumn Property="@(r => r.Name)" />
+    <TemplateColumn Title="Actions">
+        <button class="btn btn-primary" title="Edit" @onclick="@(() => ChangeRole(context))">
+            <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-danger" title="Delete" @onclick="@(async () => await DeleteRoleAsync(context))">
+            <i class="bi bi-trash-fill" aria-hidden="true"></i>
+        </button>
+    </TemplateColumn>
+</QuickGrid>
+
+<p><strong>@numResults</strong> items</p>
+
+<BModal @ref="NewBModal" Title="Add Role">
+    <Body>
+        <div class="row">
+            <form id="newForm" @onsubmit="@(async () => await AddNewRoleAsync())">
+                <div class="mb-3">
+                    <label class="form-label">Name:</label>
+                    <input type="text" class="form-control" placeholder="Role Name" required @bind="@roleNameField">
+                </div>
+            </form>
+        </div>
+    </Body>
+    <Footer>
+        <button type="submit" class="btn btn-primary" form="newForm">Create</button>
+        <button type="button" class="btn btn-secondary" @onclick="() => NewBModal.Close()">Cancel</button>
+    </Footer>
+</BModal>
+
+<BModal @ref="EditBModal" Title="Edit Role">
+    <Body>
+        <div class="row">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link @TabClass(0)" @onclick="() => curTabIdx = 0">Role</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @TabClass(1)" @onclick="() => curTabIdx = 1">Claims</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane @TabClass(0)">
+                    <form id="editForm" @onsubmit="@(async () => await UpdateRoleAsync())">
+                        <div class="mb-3">
+                            <label class="form-label">Name:</label>
+                            <input type="text" class="form-control" placeholder="Role Name" required
+                                @bind="@roleNameField">
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane @TabClass(1)">
+                    <table class="table table-sm table-borderless">
+                        <tbody>
+                            <tr>
+                                <th>Type</th>
+                                <th>Value</th>
+                                <th>Action</th>
+                            </tr>
+                            @foreach (var claim in claims)
+                            {
+                                <tr>
+                                    <td>@claim.Type</td>
+                                    <td>@claim.Value</td>
+                                    <td><a class="actionlink" @onclick="() => claims.Remove(claim)">Remove</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    <select @bind="@claimTypeField" class="form-select">
+                                        <option></option>
+                                        @foreach (var type in claimTypes)
+                                        {
+                                            <option>@type.Key</option>
+                                        }
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control" @bind="@claimValueField"></td>
+                                <td><a class="actionlink" @onclick="@(() => AddClaim())">Add</a></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </Body>
+    <Footer>
+        <button type="submit" class="btn btn-primary" form="editForm">Update</button>
+        <button type="button" class="btn btn-secondary" @onclick="() => EditBModal.Close()">Cancel</button>
+    </Footer>
+</BModal>
+
+
+@code {
+    private int curTabIdx { get; set; } = 0;
+    private string? TabClass(int idx) => curTabIdx == idx ? "active" : null;
+
+    private Pages.BModal? NewBModal { get; set; }
+    private Pages.BModal? EditBModal { get; set; }
+
+    Guid roleIdField;
+    string roleNameField = String.Empty;
+
+    record RoleList(int total, Role[] data);
+    record Role(Guid Id, string Name, KeyValuePair<string, string>[] Claims);
+
+    QuickGrid<Role>? rolesGrid;
+    GridItemsProvider<Role>? rolesProvider;
+    int numResults = 0;
+
+    Dictionary<string, string>? claimTypes = new Dictionary<string, string>();
+    // Dictionary<string, string> roles = new Dictionary<string, string>();
+
+    List<Claim> claims = new List<Claim>();
+    string claimTypeField = String.Empty;
+    string claimValueField = String.Empty;
+    
+
+    private static async Task PostJsonHttpClient<T>(string uri, HttpClient httpClient, T value)
+    {
+        // var postUser = new User { Name = "Steve Gordon" };
+        var postResponse = await httpClient.PostAsJsonAsync(uri, value);
+        postResponse.EnsureSuccessStatusCode();
+    }
+
+    void AddClaim()
+    {
+        if (!string.IsNullOrWhiteSpace(claimTypeField) && !string.IsNullOrWhiteSpace(claimValueField))
+        {
+            claims.Add(new Claim(claimTypeField, claimValueField));
+            claimTypeField = String.Empty;
+            claimValueField = String.Empty;
+        }
+    }
+
+    void NewRoleModal()
+    {
+        roleNameField = String.Empty;
+        NewBModal.Open();
+    }
+
+    async Task AddNewRoleAsync()
+    {
+        NewBModal.Close();
+        var httpClient = HttpClientFactory.CreateClient("IdentityController");
+        await httpClient.PostAsync($"/api/identity/CreateRole?name={roleNameField}", null);
+        await rolesGrid.RefreshDataAsync();
+    }
+
+    void ChangeRole(Role r)
+    {
+        roleIdField = r.Id;
+        roleNameField = r.Name;
+
+        claims.Clear();
+        foreach (var claim in r.Claims)
+            claims.Add(new Claim(claim.Key, claim.Value));
+
+        claimTypeField = String.Empty;
+        claimValueField = String.Empty;
+
+        curTabIdx = 0;
+        EditBModal.Open();
+    }
+
+    async Task UpdateRoleAsync()
+    {
+        EditBModal.Close();
+
+        var dict = new Dictionary<string, object?>
+            {
+                ["id"] = roleIdField,
+                ["name"] = roleNameField
+            };
+
+        var i = 0;
+        foreach (var claim in claims)
+        {
+            dict.Add($"claims[{i}].key", claim.Type);
+            dict.Add($"claims[{i}].value", claim.Value);
+            i++;
+        }
+
+        var httpClient = HttpClientFactory.CreateClient("IdentityController");
+        var url = NavManager.GetUriWithQueryParameters("/api/identity/updaterole", dict);
+        await httpClient.PostAsync(url, null);
+
+        await rolesGrid.RefreshDataAsync();
+    }
+
+    async Task DeleteRoleAsync(Role r)
+    {
+        var httpClient = HttpClientFactory.CreateClient("IdentityController");
+
+        if (await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?"))
+        {
+            await httpClient.DeleteAsync($"/api/identity/DeleteRole?id={r.Id}");
+            await rolesGrid.RefreshDataAsync();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var httpClient = HttpClientFactory.CreateClient("IdentityController");
+            
+            // claimTypes = await httpClient.GetFromJsonAsync<Dictionary<string, string>>("api/identity/claimslist");
+            claimTypes = await HttpClientHelper.GetFromJsonAsync<Dictionary<string, string>>("api/identity/claimslist", httpClient);
+
+            rolesProvider = async req =>
+            {
+                var result = await HttpClientHelper.GetJsonFromContent<RoleList>("api/identity/rolelist", httpClient);
+                StateHasChanged();
+                return GridItemsProviderResult.From(items: result.data, totalItemCount: result.total);
+            };
+        }
+        catch (Exception e)
+        {
+            Logger.LogError($"Roles => OnInitializedAsync: {e.Message}");
+            throw;
+        }
+    }
+}
