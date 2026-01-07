@@ -11,7 +11,7 @@ namespace BlazorShortUrl.Controllers
 {
     // [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api")]
     public class ShortUrlController : ControllerBase
     {
         private readonly IShortUrlService _urlService;
