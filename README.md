@@ -8,7 +8,7 @@ This repo is primarily based on [1], [2], and [3].
 
 The majority of the code was generated using the Visual Studio Professional and JeBrains Rider, and deployment to container using the tutorials in [7] and [8].
 
-NOTE: When starting a new .NET project, it is often an exercise in patience to find the correct syntax for the SQL Server Connection String.
+When starting a new .NET project, it is often an exercise in patience to find the correct syntax for the SQL Server Connection String.
 
 ```bash
     dotnet dev-certs https --clean
