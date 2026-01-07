@@ -39,7 +39,7 @@ public class ShortUrlDto
     {
         // Generate shortened URL
         var urlChunk = WebEncoders.Base64UrlEncode(BitConverter.GetBytes(id));
-        var result = $"{Env.GetString("APP_URL")}/api/ShortUrl/{urlChunk}";
+        var result = $"{Env.GetString("APP_URL")}/api/{urlChunk}";
         return result;
     }
 
