@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     image: cogentcoder/blazorshorturl
     container_name: blazorshorturl
-    env_file: .env
+    # env_file: .env
 
     environment:
       - ASPNETCORE_ENVIRONMENT=$APP_ENVIRONMENT
