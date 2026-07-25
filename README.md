@@ -10,12 +10,16 @@ The majority of the code was generated using the Visual Studio Professional and 
 
 When starting a new .NET project, it is often an exercise in patience to find the correct syntax for the SQL Server Connection String.
 
+Generate a certificate and configure the local machine [11]:
+
 ```bash
     dotnet dev-certs https --clean
     dotnet dev-certs https
-    dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p PASSWORD
+    dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p CREDENTIAL_PLACEHOLDER
     dotnet dev-certs https --trust
 ```
+
+In the preceding code, replace `CREDENTIAL_PLACEHOLDER` with the password where the password must match the password used for the certificate.
 
 ## User Management
 
@@ -133,7 +137,7 @@ SQL Server EF Core Migrations (MacOS):
 
 SQL Server EF Core Migrations (Windows):
 
-```shell
+```bash
     set ASPNETCORE_ENVIRONMENT=Production
     dotnet ef migrations add InitialCreate --context DataContext --output-dir Migrations/SqlServerMigrations
 ```
