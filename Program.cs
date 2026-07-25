@@ -200,7 +200,7 @@ try
     //     await next(context);
     // });
 
-    app.MapOpenApi("/openapi/v1.json")
+    app.MapOpenApi("/openapi/v3.json")
         .RequireAuthorization("ApiAdminPolicy");
 
     // Configure Swagger middleware
@@ -208,7 +208,7 @@ try
     {
         options.DocumentTitle = "BlazorShortUrlApi";
         options.Path = "/openapi";
-        options.DocumentPath = "/openapi/v1.json";
+        options.DocumentPath = "/openapi/v3.json";
         options.DocExpansion = "list";
     });
 
