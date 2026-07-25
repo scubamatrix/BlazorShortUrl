@@ -266,8 +266,8 @@ __pycache__/
 # Files to ignore
 .env
 
-appsettings.json
-appsettings.*.json
+# appsettings.json
+# appsettings.*.json
 docker-compose.*.yml
 settings.json
 
