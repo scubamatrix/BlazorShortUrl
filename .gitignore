@@ -274,7 +274,7 @@ settings.json
 *.sublime-project
 *.sublime-workspace
 *.pkl
-*.bbprojectd
+*.bbproject
 *.log
 
 # Folders to ignore
