@@ -1,3 +1,6 @@
+# ASP.NET Core in a container
+# https://code.visualstudio.com/docs/containers/quickstart-aspnet-core
+#
 services:
   blazorapp:
     build:
@@ -18,15 +21,15 @@ services:
       - ADMIN_PASSWORD=$ADMIN_PASSWORD
       - API_KEY=$API_KEY
 
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.blazorapp.rule=Host(`$HOSTNAME`)
-      - traefik.http.services.blazorapp.loadbalancer.server.port=$SERVER_PORT
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.blazorapp.rule=Host(`$HOSTNAME`)"
+    #   - "traefik.http.services.blazorapp.loadbalancer.server.port=$SERVER_PORT"
 
     volumes:
       - /opt/BlazorShortUrl/logs:/logs
 
-networks:
-  default:
-    name: traefik
-    external: true
+# networks:
+#   default:
+#     name: traefik
+#     external: true
