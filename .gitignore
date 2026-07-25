@@ -284,7 +284,6 @@ settings.json
 .trunk/
 .vscode
 
-data/
 logs/
 output/
 temp/
