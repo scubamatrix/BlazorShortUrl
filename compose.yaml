@@ -1,0 +1,30 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup
+# an https developer certificate for your ASP.NET Core service.
+services:
+  blazorshorturl:
+    image: cogentcoder/blazorshorturl
+    container_name: blazorshorturl
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file: .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=$APP_ENVIRONMENT
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=$APP_FORWARD_HEADERS
+      - ASPNETCORE_URLS=$BASE_ADDRESS
+      - BUILD_PLATFORM=$APP_PLATFORM
+      - AppDbContext=$AppDbContext
+      - DataContext=$DataContext
+      - ADMIN_EMAIL=$ADMIN_EMAIL
+      - ADMIN_PASSWORD=$ADMIN_PASSWORD
+      - API_KEY=$API_KEY
+    ports:
+      - $APP_SERVER_PORT:$APP_SERVER_PORT
+
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.blazorapp.rule=Host(`$HOSTNAME`)"
+    #   - "traefik.http.services.blazorapp.loadbalancer.server.port=$SERVER_PORT"
+
+    volumes:
+      - /opt/BlazorShortUrl/logs:/logs
