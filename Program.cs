@@ -39,12 +39,12 @@ try
 
     // Map some appsettings to environment variables.
     // DotNetEnv cannot access configuration provider for appsettings.json
-    // var appUrl = Env.GetString("APP_URL");
-    var appUrl = builder.Configuration.GetValue<string>("AppUrl");
+    // var appUrl = builder.Configuration.GetValue<string>("AppUrl");
+    var appUrl = Env.GetString("APP_URL");
     Environment.SetEnvironmentVariable("APP_URL", appUrl);
 
-    // var baseAddr = Env.GetString("BASE_ADDRESS");
-    var baseAddr = builder.Configuration.GetValue<string>("BaseAddress");
+    // var baseAddr = builder.Configuration.GetValue<string>("BaseAddress");
+    var baseAddr = Env.GetString("BASE_ADDRESS");
     Environment.SetEnvironmentVariable("BASE_ADDRESS", baseAddr);
 
     builder.Services.AddSerilog((services, lc) => lc
