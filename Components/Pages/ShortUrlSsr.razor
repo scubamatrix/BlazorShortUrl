@@ -68,7 +68,7 @@ else
                     <td>@shortUrl.UserName</td>
                     <td>
                         <a href="@shortUrl.Url">
-                            @if (@shortUrl.Url.Length > 24) 
+                            @if (@shortUrl.Url.Length > 24)
                             {
                                 @shortUrl.Url.Substring(0, 24)
                             }
@@ -126,6 +126,8 @@ else
     private List<ShortUrlDto>? _shortUrls;
     private PersistingComponentStateSubscription _persistingState;
     private string _message = string.Empty;
+    private string _appUrl = $"{Env.GetString("BASE_ADDRESS")}/api/";
+
 
     public bool IsValidUri(string uri)
     {
@@ -139,7 +141,7 @@ else
 
         if (!Regex.IsMatch(uri, "^https?://", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
         {
-            Console.WriteLine("Uri is missing prefix: http//");
+            Console.WriteLine("Uri is missing prefix");
             return false;
         }
 
@@ -162,7 +164,7 @@ else
                     UserId = x.UserId,
                     UserName = _userName,
                     Url = x.Url,
-                    TinyUrl = x.TinyUrl,
+                    TinyUrl = $"{_appUrl}{x.TinyUrl}",
                     Description = x.Description,
                 };
             _shortUrls = queryShortUrls.ToList();
