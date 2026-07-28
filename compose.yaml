@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    env_file: .env
+    # env_file: .env
     environment:
       - ASPNETCORE_ENVIRONMENT=$APP_ENVIRONMENT
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=$APP_FORWARD_HEADERS
