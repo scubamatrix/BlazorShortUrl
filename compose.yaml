@@ -31,5 +31,5 @@ services:
 
 networks:
   default:
-    name: bridge
+    name: dockhand
     external: true
