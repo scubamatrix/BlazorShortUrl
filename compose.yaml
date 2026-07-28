@@ -26,8 +26,8 @@ services:
     #   - "traefik.http.routers.blazorapp.rule=Host(`$HOSTNAME`)"
     #   - "traefik.http.services.blazorapp.loadbalancer.server.port=$SERVER_PORT"
 
-    volumes:
-      - /opt/BlazorShortUrl/logs:/logs
+    # volumes:
+    #   - /opt/BlazorShortUrl/logs:/logs
 
 networks:
   default:
