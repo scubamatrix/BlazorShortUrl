@@ -39,12 +39,12 @@ try
 
     // Map some appsettings to environment variables.
     // DotNetEnv cannot access configuration provider for appsettings.json
-    // var appUrl = builder.Configuration.GetValue<string>("AppUrl");
-    var appUrl = Env.GetString("APP_URL");
+    // var appUrl = Env.GetString("APP_URL");
+    var appUrl = builder.Configuration.GetValue<string>("AppUrl");
     Environment.SetEnvironmentVariable("APP_URL", appUrl);
 
-    // var baseAddr = builder.Configuration.GetValue<string>("BaseAddress");
-    var baseAddr = Env.GetString("BASE_ADDRESS");
+    // var baseAddr = Env.GetString("BASE_ADDRESS");
+    var baseAddr = builder.Configuration.GetValue<string>("BaseAddress");
     Environment.SetEnvironmentVariable("BASE_ADDRESS", baseAddr);
 
     builder.Services.AddSerilog((services, lc) => lc
@@ -56,11 +56,12 @@ try
             "[{@t:HH:mm:ss} {@l:u3}{#if @tr is not null} ({substring(@tr,0,4)}:{substring(@sp,0,4)}){#end}] {@m}\n{@x}",
             theme: TemplateTheme.Code)));
 
-    Log.Information("Serilog is running");
-
     string basedir = AppContext.BaseDirectory;
-    Log.Information($"BASEDIR: {basedir}");
     Environment.SetEnvironmentVariable("BASEDIR", basedir);
+
+    Log.Information($"APP_URL: {appUrl}");
+    Log.Information($"BASE_ADDRESS: {baseAddr}");
+    Log.Information($"BASEDIR: {basedir}");
 
     // TODO: Fix needed for Traefik
     // Configure ASP.NET Core to work with proxy servers and load balancers
