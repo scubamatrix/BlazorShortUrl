@@ -31,6 +31,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 Log.Information("Serilog is starting");
+Log.Information($"Environment is {env}");
 
 try
 {
@@ -38,10 +39,12 @@ try
 
     // Map some appsettings to environment variables.
     // DotNetEnv cannot access configuration provider for appsettings.json
-    var appUrl = builder.Configuration.GetValue<string>("AppUrl");
+    // var appUrl = builder.Configuration.GetValue<string>("AppUrl");
+    var appUrl = Env.GetString("APP_URL");
     Environment.SetEnvironmentVariable("APP_URL", appUrl);
 
-    var baseAddr = builder.Configuration.GetValue<string>("BaseAddress");
+    // var baseAddr = builder.Configuration.GetValue<string>("BaseAddress");
+    var baseAddr = Env.GetString("BASE_ADDRESS");
     Environment.SetEnvironmentVariable("BASE_ADDRESS", baseAddr);
 
     builder.Services.AddSerilog((services, lc) => lc
@@ -221,7 +224,7 @@ try
     {
         app.UseExceptionHandler("/Error", createScopeForErrors: true);
 
-        // TODO: Does not work with current Traefik configuration?
+        // TODO: Does not work with current Traefik configuration
         // HTTP Strict Transport Security Protocol (HSTS)
         // The browser forces all communication over HTTPS.
         // The default HSTS value is 30 days.
