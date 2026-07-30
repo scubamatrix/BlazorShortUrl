@@ -26,26 +26,16 @@ var config = new ConfigurationBuilder()
     .AddDotNetEnv(".env", LoadOptions.TraversePath())
     .Build();
 
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(config)
-    .CreateLogger();
-
-Log.Information("Serilog is starting");
-Log.Information($"Environment is {env}");
-
 try
 {
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(config)
+        .CreateLogger();
+
+    Log.Information("Serilog is starting");
+    Log.Information($"Environment is {env}");
+
     var builder = WebApplication.CreateBuilder(args);
-
-    // Map some appsettings to environment variables.
-    // DotNetEnv cannot access configuration provider for appsettings.json
-    // var appUrl = builder.Configuration.GetValue<string>("AppUrl");
-    var appUrl = Env.GetString("APP_URL");
-    Environment.SetEnvironmentVariable("APP_URL", appUrl);
-
-    // var baseAddr = builder.Configuration.GetValue<string>("BaseAddress");
-    var baseAddr = Env.GetString("BASE_ADDRESS");
-    Environment.SetEnvironmentVariable("BASE_ADDRESS", baseAddr);
 
     builder.Services.AddSerilog((services, lc) => lc
         .ReadFrom.Configuration(config)
@@ -59,30 +49,21 @@ try
     string basedir = AppContext.BaseDirectory;
     Environment.SetEnvironmentVariable("BASEDIR", basedir);
 
-    Log.Information($"APP_URL: {appUrl}");
-    Log.Information($"BASE_ADDRESS: {baseAddr}");
-    Log.Information($"BASEDIR: {basedir}");
+    Log.Information($"APP_URL: {Env.GetString("APP_URL")}");
+    Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
+    Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
 
     // TODO: Fix needed for Traefik
     // Configure ASP.NET Core to work with proxy servers and load balancers
     builder.Services.Configure<ForwardedHeadersOptions>(options =>
     {
         options.ForwardedHeaders = ForwardedHeaders.All;
-
-        // DEBUG: Troubleshoot ForwardedHeaders.
-        // options.KnownProxies.Add(IPAddress.Parse("10.0.0.100"));
-        // options.ForwardLimit = 3;
-        // options.ForwardedForHeaderName = "X-Forwarded-For-BlazorShortUrl";
-        // options.KnownProxies.Add(IPAddress.Parse(Env.GetString("KNOWN_PROXY_IP1")));
-        // options.KnownProxies.Add(IPAddress.Parse(Env.GetString("KNOWN_PROXY_IP2")));
-        // options.KnownProxies.Add(IPAddress.Parse(Env.GetString("KNOWN_PROXY_IP3")));
     });
 
     builder.Services.AddQuickGridEntityFrameworkAdapter();
-
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-    // Add services to the container
+    // Add services to the container.
     builder.Services.AddRazorComponents()
         .AddInteractiveServerComponents();
 
@@ -100,7 +81,6 @@ try
 
     builder.Services.AddHttpContextAccessor();
 
-
     // Add HttpClient for local API calls to IdentityController.
     var httpBaseUriAccessor = new HttpBaseUrlAccessor()
     {
@@ -110,7 +90,7 @@ try
     baseAddress = Env.GetString("BASE_ADDRESS");
     Log.Information($"BaseAddress: {baseAddress}");
 
-    // Register named HttpClient
+    // Register named HttpClient for Identity API
     builder.Services
         .AddHttpClient("IdentityController", client =>
         {
@@ -120,7 +100,6 @@ try
             client.DefaultRequestHeaders.Add("X-API-Key", Env.GetString("API_KEY"));
         })
         .AddStandardResilienceHandler();
-
 
     builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
         .CreateClient("IdentityController"));
@@ -141,7 +120,7 @@ try
     var appDbContext = Env.GetString("AppDbContext");
     var dataContext = Env.GetString("DataContext");
 
-    // Need to remove quotes when using .env file
+    // Need to remove quotes when using .env file ??
     // appDbContext = appDbContext.Replace("\"", string.Empty).Trim();
     Environment.SetEnvironmentVariable("AppDbContext", appDbContext);
     Environment.SetEnvironmentVariable("DataContext", dataContext);
@@ -160,18 +139,20 @@ try
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(appDbContext));
 
-    builder.Services.AddIdentityCore<AppUser>(options =>
+
+    builder.Services.AddIdentityCore<ApplicationUser>(options =>
         {
-            options.Password.RequireDigit = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.SignIn.RequireConfirmedAccount = false;
+            options.SignIn.RequireConfirmedAccount = false;  // Disable email confirmation 
+            // options.Lockout.MaxFailedAccessAttempts = 10;    // Increase to prevent lockout during testing
+            // options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Adjust lockout time
+            options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
         })
-        .AddRoles<AppRole>()
         .AddEntityFrameworkStores<AppDbContext>()
         .AddSignInManager()
         .AddDefaultTokenProviders();
 
-    builder.Services.AddSingleton<IEmailSender<AppUser>, IdentityNoOpEmailSender>();
+    builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+
 
     // Configure Swagger middleware
     builder.Services.AddEndpointsApiExplorer();
@@ -191,19 +172,6 @@ try
     // TODO: Fix needed for Traefik
     app.UseForwardedHeaders();
 
-    // app.UseCertificateForwarding();
-    // app.UseHttpLogging();
-
-    // DEBUG: Troubleshoot HTTP request logging.
-    // app.Use(async (context, next) =>
-    // {
-    //     // Connection: RemoteIp
-    //     app.Logger.LogInformation("Request RemoteIp: {RemoteIpAddress}",
-    //         context.Connection.RemoteIpAddress);
-    //
-    //     await next(context);
-    // });
-
     app.MapOpenApi("/openapi/v3.json")
         .RequireAuthorization("ApiAdminPolicy");
 
@@ -216,16 +184,17 @@ try
         options.DocExpansion = "list";
     });
 
-    // Configure the HTTP request pipeline
+
+    // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
-        app.UseMigrationsEndPoint();
+        // app.UseMigrationsEndPoint();
     }
     else
     {
         app.UseExceptionHandler("/Error", createScopeForErrors: true);
 
-        // TODO: Does not work with current Traefik configuration
+         // TODO: HSTS does not work with current Traefik configuration
         // HTTP Strict Transport Security Protocol (HSTS)
         // The browser forces all communication over HTTPS.
         // The default HSTS value is 30 days.
@@ -244,11 +213,13 @@ try
     //     await MigrateDataAsync(app);
     // }).Wait();
 
+    app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
     app.UseHttpsRedirection();
-    app.UseAntiforgery();
 
+    // The ordering is important here
     app.UseAuthentication();
     app.UseAuthorization();
+    app.UseAntiforgery();
 
     app.MapStaticAssets();
     app.MapControllers();
@@ -262,13 +233,13 @@ try
 
     // Add Identity endpoints
     app.MapGroup("/api/account")
-        .MapIdentityApi<AppUser>();
+        .MapIdentityApi<ApplicationUser>();
 
     app.Run();
 
     Log.Information("Application stopped cleanly");
 }
-catch (Exception ex)
+catch (Exception ex) when (ex is not HostAbortedException && ex.Source != "Microsoft.EntityFrameworkCore.Design")
 {
     // Catch setup errors
     Log.Fatal(ex, "Application terminated unexpectedly");
@@ -280,34 +251,35 @@ finally
     await Log.CloseAndFlushAsync();
 }
 
-// Migrate any database changes on startup (includes initial db creation)
-static async Task MigrateDataAsync(WebApplication app)
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<DataContext>();
-        db.Database.Migrate();
-    }
 
-    using (var scope = app.Services.CreateScope())
-    {
-        var services = scope.ServiceProvider;
-        // var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+// // Migrate any database changes on startup (includes initial db creation)
+// static async Task MigrateDataAsync(WebApplication app)
+// {
+//     using (var scope = app.Services.CreateScope())
+//     {
+//         var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+//         db.Database.Migrate();
+//     }
 
-        // Migrate ApplicationDb
+//     using (var scope = app.Services.CreateScope())
+//     {
+//         var services = scope.ServiceProvider;
+//         // var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
-        // Seed Identity database
-        var db = services.GetRequiredService<AppDbContext>();
-        db.Database.Migrate();
+//         // Migrate ApplicationDb
 
-        try
-        {
-            await SeedData.InitializeAsync(services);
-        }
-        catch (Exception ex)
-        {
-            // var logger = loggerFactory.CreateLogger<Program>();
-            Log.Error(ex, "An error occurred seeding the ApplicationDb.");
-        }
-    }
-}
+//         // Seed Identity database
+//         var db = services.GetRequiredService<AppDbContext>();
+//         db.Database.Migrate();
+
+//         try
+//         {
+//             await SeedData.InitializeAsync(services);
+//         }
+//         catch (Exception ex)
+//         {
+//             // var logger = loggerFactory.CreateLogger<Program>();
+//             Log.Error(ex, "An error occurred seeding the ApplicationDb.");
+//         }
+//     }
+// }

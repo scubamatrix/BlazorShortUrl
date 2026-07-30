@@ -1,4 +1,3 @@
-# base stage
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 5100
@@ -10,7 +9,6 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src
 COPY ["BlazorShortUrl.csproj", "./"]
-COPY ["appsettings.*", "./app"]
 RUN dotnet restore "BlazorShortUrl.csproj"
 COPY . .
 WORKDIR "/src/."
