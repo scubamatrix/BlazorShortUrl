@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BlazorShortUrl.Migrations.DataMigrations
+namespace BlazorShortUrl.Migrations.SqlServerMigrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -18,7 +18,8 @@ namespace BlazorShortUrl.Migrations.DataMigrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TinyUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TinyUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

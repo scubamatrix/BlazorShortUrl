@@ -17,7 +17,7 @@ The majority of the code was generated using the Visual Studio Professional and 
 [3]: [Identity Manager Blazor United](https://github.com/mguinness/IdentityManagerBlazorUnited)
 
 [4]: [Installing Entity Framework Core](https://learn.microsoft.com/en-gb/ef/core/get-started/overview/install)
- 
+
 [5]: [Scaffold Identity in ASP.NET Core projects](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-identity?view=aspnetcore-9.0&tabs=visual-studio)
 
 [6]: [Managing Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/managing?tabs=dotnet-core-cli)

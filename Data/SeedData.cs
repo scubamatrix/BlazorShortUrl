@@ -15,7 +15,7 @@ public static class SeedData
     public static async Task InitializeAsync(IServiceProvider services)
     {
         var context = services.GetRequiredService<AppDbContext>();
-        var userManager = services.GetRequiredService<UserManager<AppUser>>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
 
         if (context == null || context.ApplicationUser == null || context.ApplicationRole == null)
@@ -33,17 +33,17 @@ public static class SeedData
         await SeedData.SeedAdminAsync(userManager, roleManager);
     }
 
-    private static async Task SeedRolesAsync(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+    private static async Task SeedRolesAsync(UserManager<ApplicationUser> userManager, RoleManager<AppRole> roleManager)
     {
         // Seed Roles
         await roleManager.CreateAsync(new AppRole(Roles.Admin.ToString()));
         await roleManager.CreateAsync(new AppRole(Roles.Basic.ToString()));
     }
 
-    private static async Task SeedAdminAsync(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+    private static async Task SeedAdminAsync(UserManager<ApplicationUser> userManager, RoleManager<AppRole> roleManager)
     {
         // Seed default admin user
-        var defaultUser = new AppUser
+        var defaultUser = new ApplicationUser
         {
             UserName = Env.GetString("ADMIN_EMAIL"),
             Email = Env.GetString("ADMIN_EMAIL"),

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace BlazorShortUrl.Data
 {
-    public class AppDbContext : IdentityDbContext<AppUser, AppRole, string>
+    public class AppDbContext : IdentityDbContext<ApplicationUser, AppRole, string>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         { }
@@ -24,21 +24,21 @@ namespace BlazorShortUrl.Data
         }
 
         // Need for Ef scaffolding
-        public virtual DbSet<AppUser> ApplicationUser { get; set; }
+        public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
         public virtual DbSet<AppRole> ApplicationRole { get; set; }
-        
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUser>()
+            builder.Entity<ApplicationUser>()
                 .HasMany(p => p.Roles)
                 .WithOne()
                 .HasForeignKey(p => p.UserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Entity<AppUser>()
+            builder.Entity<ApplicationUser>()
                 .HasMany(e => e.Claims)
                 .WithOne()
                 .HasForeignKey(e => e.UserId)
@@ -64,7 +64,7 @@ namespace BlazorShortUrl.Data
             // }
         }
     }
-    
+
     internal class DummyIdValueGenerator : ValueGenerator<int>
     {
         public override bool GeneratesTemporaryValues => false;
