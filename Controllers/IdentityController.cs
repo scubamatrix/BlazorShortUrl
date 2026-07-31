@@ -16,14 +16,14 @@ namespace BlazorShortUrl.Controllers
     // [Authorize(Roles = "Admin")]
     public class IdentityController : Controller
     {
-        private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<AppRole> _roleManager;
         private readonly ILogger<IdentityController> _logger;
         private readonly Dictionary<string, string?> _roles;
         private readonly Dictionary<string, string?> _claimTypes;
         // private readonly AuthenticationStateProvider? _authStateProvider;
 
-        public IdentityController(UserManager<AppUser> userManager,
+        public IdentityController(UserManager<ApplicationUser> userManager,
                                   RoleManager<AppRole> roleManager,
                                   // AuthenticationStateProvider authStateProvider,
                                   ILogger<IdentityController> logger)
@@ -205,7 +205,7 @@ namespace BlazorShortUrl.Controllers
         {
             try
             {
-                var user = new AppUser() { Email = email, UserName = userName };
+                var user = new ApplicationUser() { Email = email, UserName = userName };
 
                 var result = await _userManager.CreateAsync(user, password);
                 if (result.Succeeded)

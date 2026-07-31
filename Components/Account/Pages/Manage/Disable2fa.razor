@@ -3,14 +3,13 @@
 @using Microsoft.AspNetCore.Identity
 @using BlazorShortUrl.Data
 
-@inject UserManager<AppUser> UserManager
-@inject IdentityUserAccessor UserAccessor
+@inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<Disable2fa> Logger
 
 <PageTitle>Disable two-factor authentication (2FA)</PageTitle>
 
-<StatusMessage/>
+<StatusMessage />
 <h3>Disable two-factor authentication (2FA)</h3>
 
 <div class="alert alert-warning" role="alert">
@@ -25,19 +24,25 @@
 
 <div>
     <form @formname="disable-2fa" @onsubmit="OnSubmitAsync" method="post">
-        <AntiforgeryToken/>
+        <AntiforgeryToken />
         <button class="btn btn-danger" type="submit">Disable 2FA</button>
     </form>
 </div>
 
 @code {
-    private AppUser user = default!;
+    private ApplicationUser? user;
 
-    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        user = await UserManager.GetUserAsync(HttpContext.User);
+        if (user is null)
+        {
+            RedirectManager.RedirectToInvalidUser(UserManager, HttpContext);
+            return;
+        }
 
         if (HttpMethods.IsGet(HttpContext.Request.Method) && !await UserManager.GetTwoFactorEnabledAsync(user))
         {
@@ -47,6 +52,12 @@
 
     private async Task OnSubmitAsync()
     {
+        if (user is null)
+        {
+            RedirectManager.RedirectToInvalidUser(UserManager, HttpContext);
+            return;
+        }
+
         var disable2faResult = await UserManager.SetTwoFactorEnabledAsync(user, false);
         if (!disable2faResult.Succeeded)
         {
@@ -60,5 +71,4 @@
             "2fa has been disabled. You can reenable 2fa when you setup an authenticator app",
             HttpContext);
     }
-
 }

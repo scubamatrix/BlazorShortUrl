@@ -4,10 +4,10 @@ using BlazorShortUrl.Data;
 namespace BlazorShortUrl.Components.Account;
 
 internal sealed class IdentityUserAccessor(
-    UserManager<AppUser> userManager,
+    UserManager<ApplicationUser> userManager,
     IdentityRedirectManager redirectManager)
 {
-    public async Task<AppUser> GetRequiredUserAsync(HttpContext context)
+    public async Task<ApplicationUser> GetRequiredUserAsync(HttpContext context)
     {
         var user = await userManager.GetUserAsync(context.User);
 
