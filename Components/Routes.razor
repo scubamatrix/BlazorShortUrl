@@ -1,19 +1,11 @@
 ﻿@using BlazorShortUrl.Components.Account.Shared
-
-<Router AppAssembly="typeof(Program).Assembly">
+<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
             <NotAuthorized>
-                <RedirectToLogin/>
+                <RedirectToLogin />
             </NotAuthorized>
         </AuthorizeRouteView>
-        <FocusOnNavigate RouteData="routeData" Selector="h1"/>
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
-
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(Layout.MainLayout)">
-            <p role="alert">Sorry, there is nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
 </Router>
