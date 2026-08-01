@@ -1,0 +1,28 @@
+# App Settings
+LOG_LEVEL=Debug
+
+APP_ENVIRONMENT=Development
+APP_FORWARD_HEADERS=true
+APP_PLATFORM=Linux
+APP_UID=app
+
+APP_HOSTNAME=localhost
+APP_SERVER_PORT=7100
+
+# Needed for API calls to IdentityController
+BASE_ADDRESS=https://localhost:7100
+
+# uuidgen on macos
+CREDENTIAL_PLACEHOLDER=WWWW-XXXX-YYY-ZZZ
+
+ADMIN_EMAIL=username@domain.com
+ADMIN_PASSWORD=XXXYYYZZ
+API_KEY=XXXX-YYYY-ZZZ
+
+# ConnectionStrings for EF Core Migrations
+# AppDbContext=Server=192.168.120.9;Database=db_name;User Id=sa_user;Password=sa_password;TrustServerCertificate=true;Connection Timeout=30;
+# DataContext=Server=1192.168.120.9;Database=db_name;User Id=sa_user;Password=sa_password;TrustServerCertificate=true;Connection Timeout=30;
+
+# ConnectionStrings for application
+AppDbContext=Server=192.168.120.9;Database=db_name;User Id=db_user;Password=db_password;TrustServerCertificate=true;Connection Timeout=30;
+DataContext=Server=1192.168.120.9;Database=db_name;User Id=db_user;Password=db_password;TrustServerCertificate=true;Connection Timeout=30;
