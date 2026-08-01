@@ -8,6 +8,14 @@ This repo is primarily based on [1], [2], and [3].
 
 The majority of the code was generated using the Visual Studio Professional and JeBrains Rider, and deployment to container using the tutorials in [7] and [8].
 
+
+## New Version
+
+- Fixed Login/Logout issues
+- Fixed API issues with IdentityController
+- TODO: Finish notes here
+
+
 ## Quickstart
 
 When starting a new .NET project, it is often an exercise in patience to find the correct syntax for the SQL Server Connection String.
@@ -190,10 +198,14 @@ SQL Server EF Core Migrations (Windows):
 
 [11]: [Hosting ASP.NET Core images with Docker over HTTPS](https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-9.0)
 
-[12]: [How to securely reverse-proxy ASP.NET Core web apps](https://anthonysimmon.com/securely-reverse-proxy-aspnet-core-web-apps/)
+-----
 
-[13]: [Configure ASP.NET Core to work with proxy servers and load balancers](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-9.0)
+[How to securely reverse-proxy ASP.NET Core web apps](https://anthonysimmon.com/securely-reverse-proxy-aspnet-core-web-apps/)
 
-[14]: [Write custom ASP.NET Core middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/write?view=aspnetcore-9.0)
+[Configure ASP.NET Core to work with proxy servers and load balancers](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-9.0)
 
-[15]: [HTTP Client in C#: Best Practices for Experts](https://medium.com/@iamprovidence/http-client-in-c-best-practices-for-experts-840b36d8f8c4)
+[Write custom ASP.NET Core middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/write?view=aspnetcore-9.0)
+
+[HTTP Client in C#: Best Practices for Experts](https://medium.com/@iamprovidence/http-client-in-c-best-practices-for-experts-840b36d8f8c4)
+
+[5 .vscode Files That Standardize Your Whole Team](https://pub.towardsai.net/5-vscode-files-that-standardize-your-whole-team-f6e1e80fbf5f)
