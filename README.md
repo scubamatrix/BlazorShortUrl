@@ -10,6 +10,7 @@ The majority of the code was generated using the Visual Studio Professional and 
 
 ## Changes for version 2.1.0
 
+- Added Docker container support
 - Fixes and updates for .NET 10
 - Upgrade ASP.NET Identity for .NET 10
 - Redo EF migrations for ASP.NET Identity 10
