@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-BlazorShortUrl-6b24b8ab-59cc-4e27-92a3-a4896e73c758</UserSecretsId>
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
+    <!-- Suppress error messages -->
+    <NoWarn>8602;8604</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
