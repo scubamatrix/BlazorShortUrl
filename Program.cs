@@ -141,7 +141,6 @@ try
     builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(appDbContext));
 
-
     builder.Services.AddIdentityCore<ApplicationUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = false;  // Disable email confirmation
@@ -173,9 +172,6 @@ try
     // Configure web application
     var app = builder.Build();
 
-    // TODO: Fix needed for Traefik
-    app.UseForwardedHeaders();
-
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -201,28 +197,36 @@ try
     {
         app.UseExceptionHandler("/Error", createScopeForErrors: true);
 
-        // TODO: HSTS does not work with current Traefik configuration
+        // NOTE: HSTS does not seem to work with Traefik
         // HTTP Strict Transport Security Protocol (HSTS)
         // The browser forces all communication over HTTPS.
         // The default HSTS value is 30 days.
         // You may want to change this for production scenarios (https://aka.ms/aspnetcore-hsts).
-        // app.UseHsts();
+        app.UseHsts();
     }
 
+    //
+    // Configure request pipeline (middleware).
+    //
+    // Keep Lightweight Middleware Early.
+    // Middleware registered earlier executes for every request.
+    // Each middleware has a specific responsibility and changing the order
+    // can affect both functionality and performance.
+
     // Write streamlined request completion events rather than verbose from the framework.
-    // Remove this line and set the "Microsoft" level in appsettings.json to "Information"
-    // to use the default framework request logging.
     app.UseSerilogRequestLogging();
 
+    app.UseForwardedHeaders();
     app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
     app.UseHttpsRedirection();
+    app.MapStaticAssets();
 
     // The ordering is important here
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseAntiforgery();
+    // app.UseRateLimiter();
 
-    app.MapStaticAssets();
     app.MapControllers();
 
     app.MapRazorComponents<BlazorShortUrl.Components.App>()
