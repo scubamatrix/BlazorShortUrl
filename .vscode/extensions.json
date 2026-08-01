@@ -1,13 +1,13 @@
 {
-    "recommendations": [
-        "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
-        "bradlc.vscode-tailwindcss",
-        "ms-vscode.vscode-typescript-next",
-        "csstools.postcss"
-    ],
-    "unwantedRecommendations": [
-        "hookyqr.beautify",
-        "octref.vetur"
-    ]
+    // "recommendations": [
+    //     "esbenp.prettier-vscode",
+    //     "dbaeumer.vscode-eslint",
+    //     "bradlc.vscode-tailwindcss",
+    //     "ms-vscode.vscode-typescript-next",
+    //     "csstools.postcss"
+    // ],
+    // "unwantedRecommendations": [
+    //     "hookyqr.beautify",
+    //     "octref.vetur"
+    // ]
 }
