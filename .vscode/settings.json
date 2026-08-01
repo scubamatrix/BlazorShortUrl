@@ -1,0 +1,35 @@
+{
+    "trunk.trace.server": "off",
+    "trunk.addToolsToPath": false,
+    "python.terminal.useEnvFile": true,
+    //
+    // A typical front-end setup for
+    // React + TypeScript + ESLint + Prettier
+    //
+    // --- Formatting & auto-fix ---
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        // "source.fixAll.eslint": true,
+    },
+    // Pin a formatter per language to avoid plugin conflicts
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // --- File & search hygiene ---
+    "files.exclude": {
+        "node_modules": true,
+        "dist": true,
+        ".next": true
+    },
+    "search.exclude": {
+        "pnpm-lock.yaml": true,
+        "package-lock.json": true
+    },
+    // --- TypeScript ---
+    "ts.tsdk.path": "node_modules/typescript/lib",
+    "js/ts.tsdk.promptToUseWorkspaceVersion": true,
+}

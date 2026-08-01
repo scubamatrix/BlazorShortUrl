@@ -268,11 +268,11 @@ __pycache__/
 
 # appsettings.json
 # appsettings.*.json
+# settings.json
 
 Dockerfile.*
 compose.*.yaml
 docker-compose.*.yml
-settings.json
 
 *.sublime-project
 *.sublime-workspace
@@ -285,7 +285,6 @@ settings.json
 .nova/
 .spyproject/
 .trunk/
-.vscode
 
 logs/
 output/
