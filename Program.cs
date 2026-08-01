@@ -91,7 +91,7 @@ try
     Log.Information($"BaseAddress: {baseAddress}");
 
     // Register named HttpClient for Identity API
-    builder.Services
+    var httpClientBuilder = builder.Services
         .AddHttpClient("IdentityController", client =>
         {
             client.BaseAddress = new Uri(baseAddress);
@@ -99,10 +99,12 @@ try
             client.DefaultRequestHeaders.Add("User-Agent", "BlazorShortUrl-IdentityController");
             client.DefaultRequestHeaders.Add("X-API-Key", Env.GetString("API_KEY"));
         })
-        .AddStandardResilienceHandler();
+    .AddStandardResilienceHandler();
 
-    builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
-        .CreateClient("IdentityController"));
+    // TODO: Need to refactor IHttpClientFactory
+    // Create the HttpClient as a singleton instance
+    // builder.Services.AddSingleton(sp => sp.GetRequiredService<IHttpClientFactory>()
+    //     .CreateClient("IdentityController"));
 
 
     // Add API Key middleware
@@ -142,11 +144,14 @@ try
 
     builder.Services.AddIdentityCore<ApplicationUser>(options =>
         {
-            options.SignIn.RequireConfirmedAccount = false;  // Disable email confirmation 
+            options.SignIn.RequireConfirmedAccount = false;  // Disable email confirmation
+            options.Password.RequireDigit = true;
+            options.Password.RequireNonAlphanumeric = true;
             // options.Lockout.MaxFailedAccessAttempts = 10;    // Increase to prevent lockout during testing
             // options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // Adjust lockout time
             options.Stores.SchemaVersion = IdentitySchemaVersions.Version3;
         })
+        .AddRoles<AppRole>()
         .AddEntityFrameworkStores<AppDbContext>()
         .AddSignInManager()
         .AddDefaultTokenProviders();
@@ -156,12 +161,11 @@ try
 
     // Configure Swagger middleware
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddAuthorization(o =>
+    builder.Services.AddAuthorization();
+    builder.Services.AddOpenApi(options =>
     {
-        o.AddPolicy("ApiAdminPolicy", b => b.RequireRole("Admin"));
+        options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi3_1;  // .NET 10
     });
-    builder.Services.AddOpenApi();
-
     builder.Services.AddControllers();
 
     // ==========
@@ -172,29 +176,32 @@ try
     // TODO: Fix needed for Traefik
     app.UseForwardedHeaders();
 
-    app.MapOpenApi("/openapi/v3.json")
-        .RequireAuthorization("ApiAdminPolicy");
-
-    // Configure Swagger middleware
-    app.UseSwaggerUi(options =>
-    {
-        options.DocumentTitle = "BlazorShortUrlApi";
-        options.Path = "/openapi";
-        options.DocumentPath = "/openapi/v3.json";
-        options.DocExpansion = "list";
-    });
-
-
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
-        // app.UseMigrationsEndPoint();
+        app.MapOpenApi("/openapi/v1.json");
+
+        // Configure Swagger middleware
+        app.UseSwaggerUi(options =>
+        {
+            options.DocumentTitle = "BlazorShortUrlApi";
+            options.Path = "/swagger";
+            options.DocumentPath = "/openapi/v1.json";
+            options.DocExpansion = "list";
+        });
+
+        app.UseMigrationsEndPoint();
+        // Migrate Data
+        Task.Run(async () =>
+        {
+            await MigrateDataAsync(app);
+        }).Wait();
     }
     else
     {
         app.UseExceptionHandler("/Error", createScopeForErrors: true);
 
-         // TODO: HSTS does not work with current Traefik configuration
+        // TODO: HSTS does not work with current Traefik configuration
         // HTTP Strict Transport Security Protocol (HSTS)
         // The browser forces all communication over HTTPS.
         // The default HSTS value is 30 days.
@@ -206,12 +213,6 @@ try
     // Remove this line and set the "Microsoft" level in appsettings.json to "Information"
     // to use the default framework request logging.
     app.UseSerilogRequestLogging();
-
-    // Migrate Data
-    // Task.Run(async () =>
-    // {
-    //     await MigrateDataAsync(app);
-    // }).Wait();
 
     app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
     app.UseHttpsRedirection();
@@ -251,35 +252,34 @@ finally
     await Log.CloseAndFlushAsync();
 }
 
+// Migrate any database changes on startup (includes initial db creation)
+static async Task MigrateDataAsync(WebApplication app)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+        db.Database.Migrate();
+    }
 
-// // Migrate any database changes on startup (includes initial db creation)
-// static async Task MigrateDataAsync(WebApplication app)
-// {
-//     using (var scope = app.Services.CreateScope())
-//     {
-//         var db = scope.ServiceProvider.GetRequiredService<DataContext>();
-//         db.Database.Migrate();
-//     }
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        // var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
-//     using (var scope = app.Services.CreateScope())
-//     {
-//         var services = scope.ServiceProvider;
-//         // var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+        // Migrate ApplicationDb
 
-//         // Migrate ApplicationDb
+        // Seed Identity database
+        var db = services.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
 
-//         // Seed Identity database
-//         var db = services.GetRequiredService<AppDbContext>();
-//         db.Database.Migrate();
-
-//         try
-//         {
-//             await SeedData.InitializeAsync(services);
-//         }
-//         catch (Exception ex)
-//         {
-//             // var logger = loggerFactory.CreateLogger<Program>();
-//             Log.Error(ex, "An error occurred seeding the ApplicationDb.");
-//         }
-//     }
-// }
+        try
+        {
+            await SeedData.InitializeAsync(services);
+        }
+        catch (Exception ex)
+        {
+            // var logger = loggerFactory.CreateLogger<Program>();
+            Log.Error(ex, "An error occurred seeding the ApplicationDb.");
+        }
+    }
+}
