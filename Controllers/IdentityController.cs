@@ -25,15 +25,13 @@ namespace BlazorShortUrl.Controllers
 
         public IdentityController(UserManager<ApplicationUser> userManager,
                                   RoleManager<AppRole> roleManager,
-                                  // AuthenticationStateProvider authStateProvider,
                                   ILogger<IdentityController> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-            // _authStateProvider = authStateProvider;
             _logger = logger;
 
-            _roles = roleManager.Roles.OrderBy(r => r.Name).ToDictionary(r => r.Id, r => r.Name);
+            _roles = _roleManager.Roles.OrderBy(r => r.Name).ToDictionary(r => r.Id, r => r.Name);
             var fldInfo = typeof(ClaimTypes).GetFields(BindingFlags.Static | BindingFlags.Public);
             _claimTypes = fldInfo.OrderBy(c => c.Name).ToDictionary(c => c.Name, c => (string?)c.GetValue(null));
         }
@@ -51,20 +49,6 @@ namespace BlazorShortUrl.Controllers
         {
             Console.WriteLine("IdentityController => ClaimsList");
             return _claimTypes;
-
-            // var authState = await _authStateProvider.GetAuthenticationStateAsync();
-            // var user = authState.User;
-            //
-            // var authState = await _authStateProvider.GetAuthenticationStateAsync(_httpContext);
-            //
-            // if (user.Identity is not null && user.Identity.IsAuthenticated)
-            // {
-            //     Console.WriteLine($"{user.Identity.Name} is authenticated.");
-            // }
-            // else
-            // {
-            //     Console.WriteLine($"The user is NOT authenticated.");
-            // }
         }
 
         [HttpGet("[action]")]

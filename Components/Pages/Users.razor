@@ -26,22 +26,24 @@
 
 <QuickGrid Class="table table-striped table-bordered" ItemsProvider="@usersProvider" @ref="usersGrid">
     <PropertyColumn Property="@(u => u.Id)" Sortable="true" />
-    <PropertyColumn Property="@(u => u.Email)" Sortable="true" InitialSortDirection="SortDirection.Auto" />
+    @* <PropertyColumn Property="@(u => u.Email)" Sortable="true" InitialSortDirection="SortDirection.Auto" /> *@
     <PropertyColumn Property="@(u => u.UserName)" Sortable="true" />
-    <PropertyColumn Property="@(u => u.DisplayName)" Sortable="false" />
+    @* <PropertyColumn Property="@(u => u.DisplayName)" Sortable="false" /> *@
     <PropertyColumn Property="@(u => string.Join(", ", u.Roles))" Title="Roles" Sortable="false" />
     <PropertyColumn Property="@(u => u.LockedOut)" Sortable="false" />
 
     <TemplateColumn Title="Actions">
-        <button class="btn btn-primary" title="Edit" @onclick="@(() => ChangeUser(context))">
-            <i class="bi bi-pencil-fill" aria-hidden="true"></i>
-        </button>
-        <button class="btn btn-danger" title="Delete" @onclick="@(async () => await DeleteUserAsync(context))">
-            <i class="bi bi-trash-fill" aria-hidden="true"></i>
-        </button>
-        <button class="btn btn-primary" title="Password" @onclick="@(() => ChangePassword(context))">
-            <i class="bi bi-key-fill" aria-hidden="true"></i>
-        </button>
+        <div style="width:125px;">
+            <button class="btn btn-primary btn-sm" title="Edit" @onclick="@(() => ChangeUser(context))">
+                <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" title="Delete" @onclick="@(async () => await DeleteUserAsync(context))">
+                <i class="bi bi-trash-fill" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-primary btn-sm" title="Password" @onclick="@(() => ChangePassword(context))">
+                <i class="bi bi-key-fill" aria-hidden="true"></i>
+            </button>
+        </div>
     </TemplateColumn>
 </QuickGrid>
 
@@ -107,14 +109,17 @@
                 </div>
                 <div class="tab-pane @TabClass(1)">
                     <div class="mb-3">
-                        @foreach (var role in allRoles)
+                        @if (allRoles is not null)
                         {
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="@role.Key"
-                                    checked="@roles.Contains(role.Value)"
-                                    @onchange="eventArgs => CheckboxChanged(role.Value, eventArgs.Value)">
-                                <label class="form-check-label">@role.Value</label>
-                            </div>
+                            @foreach (var role in allRoles)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="@role.Key"
+                                        checked="@roles.Contains(role.Value)"
+                                        @onchange="eventArgs => CheckboxChanged(role.Value, eventArgs.Value ?? string.Empty)">
+                                    <label class="form-check-label">@role.Value</label>
+                                </div>
+                            }
                         }
                     </div>
                 </div>
@@ -140,9 +145,12 @@
                                 <td>
                                     <select @bind="@claimTypeField" class="form-select">
                                         <option></option>
-                                        @foreach (var type in claimTypes)
+                                        @if (claimTypes is not null)
                                         {
-                                            <option>@type.Key</option>
+                                            @foreach (var type in claimTypes)
+                                            {
+                                                <option>@type.Key</option>
+                                            }
                                         }
                                     </select>
                                 </td>
@@ -382,11 +390,8 @@
         searchTimer.Elapsed += Elapsed_SearchAsync;
 
         var httpClient = HttpClientFactory.CreateClient("IdentityController");
-        
-        // allRoles = await httpClient.GetFromJsonAsync<Dictionary<string, string>>("/api/identity/roleslist");
-        // claimTypes = await httpClient.GetFromJsonAsync<Dictionary<string, string>>("/api/identity/claimslist");
 
-        allRoles = await HttpClientHelper.GetFromJsonAsync<Dictionary<string, string>>("/api/identity/roleslist", httpClient);
+        allRoles = await HttpClientHelper.GetFromJsonAsync<Dictionary<string, string>>("/api/identity/roleslist", httpClient) ?? new Dictionary<string, string>();
         claimTypes = await HttpClientHelper.GetFromJsonAsync<Dictionary<string, string>>("/api/identity/claimslist", httpClient);
 
         usersProvider = async req =>
@@ -406,7 +411,6 @@
 
             // var response = await httpClient.GetFromJsonAsync<UserList>(url, req.CancellationToken);
             var response = await HttpClientHelper.GetFromJsonAsync<UserList>(url, httpClient);
-
             return GridItemsProviderResult.From(items: response.data, totalItemCount: response.total);
         };
     }

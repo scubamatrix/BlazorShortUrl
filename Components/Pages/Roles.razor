@@ -25,12 +25,14 @@
     <PropertyColumn Property="@(r => r.Id)" />
     <PropertyColumn Property="@(r => r.Name)" />
     <TemplateColumn Title="Actions">
-        <button class="btn btn-primary" title="Edit" @onclick="@(() => ChangeRole(context))">
-            <i class="bi bi-pencil-fill" aria-hidden="true"></i>
-        </button>
-        <button class="btn btn-danger" title="Delete" @onclick="@(async () => await DeleteRoleAsync(context))">
-            <i class="bi bi-trash-fill" aria-hidden="true"></i>
-        </button>
+        <div style="width:100px;">
+            <button class="btn btn-primary btn-sm" title="Edit" @onclick="@(() => ChangeRole(context))">
+                <i class="bi bi-pencil-fill" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" title="Delete" @onclick="@(async () => await DeleteRoleAsync(context))">
+                <i class="bi bi-trash-fill" aria-hidden="true"></i>
+            </button>
+        </div>
     </TemplateColumn>
 </QuickGrid>
 
@@ -97,9 +99,12 @@
                                 <td>
                                     <select @bind="@claimTypeField" class="form-select">
                                         <option></option>
-                                        @foreach (var type in claimTypes)
+                                        @if (claimTypes is not null)
                                         {
-                                            <option>@type.Key</option>
+                                            @foreach (var type in claimTypes)
+                                            {
+                                                <option>@type.Key</option>
+                                            }
                                         }
                                     </select>
                                 </td>
@@ -123,8 +128,8 @@
     private int curTabIdx { get; set; } = 0;
     private string? TabClass(int idx) => curTabIdx == idx ? "active" : null;
 
-    private Pages.BModal? NewBModal { get; set; }
-    private Pages.BModal? EditBModal { get; set; }
+    private Pages.BModal NewBModal { get; set; } = new BModal();
+    private Pages.BModal EditBModal { get; set; } = new BModal();
 
     Guid roleIdField;
     string roleNameField = String.Empty;
@@ -137,12 +142,11 @@
     int numResults = 0;
 
     Dictionary<string, string>? claimTypes = new Dictionary<string, string>();
-    // Dictionary<string, string> roles = new Dictionary<string, string>();
 
     List<Claim> claims = new List<Claim>();
     string claimTypeField = String.Empty;
     string claimValueField = String.Empty;
-    
+
 
     private static async Task PostJsonHttpClient<T>(string uri, HttpClient httpClient, T value)
     {
@@ -171,7 +175,7 @@
     {
         NewBModal.Close();
         var httpClient = HttpClientFactory.CreateClient("IdentityController");
-        await httpClient.PostAsync($"/api/identity/CreateRole?name={roleNameField}", null);
+        await httpClient.PostAsync($"/api/identity/CreateRole?name={roleNameField}", content: null);
         await rolesGrid.RefreshDataAsync();
     }
 
@@ -223,7 +227,9 @@
         if (await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?"))
         {
             await httpClient.DeleteAsync($"/api/identity/DeleteRole?id={r.Id}");
-            await rolesGrid.RefreshDataAsync();
+            if (rolesGrid is not null) {
+                await rolesGrid.RefreshDataAsync();
+            }
         }
     }
 
@@ -232,13 +238,15 @@
         try
         {
             var httpClient = HttpClientFactory.CreateClient("IdentityController");
-            
-            // claimTypes = await httpClient.GetFromJsonAsync<Dictionary<string, string>>("api/identity/claimslist");
-            claimTypes = await HttpClientHelper.GetFromJsonAsync<Dictionary<string, string>>("api/identity/claimslist", httpClient);
+
+            var response = await httpClient.GetAsync($"/api/identity/claimslist");
+
+            @* claimTypes = await httpClient.GetFromJsonAsync<Dictionary<string, string>>("api/identity/claimslist"); *@
+            claimTypes = await HttpClientHelper.GetFromJsonAsync<Dictionary<string, string>>("/api/identity/claimslist", httpClient) ?? new Dictionary<string, string>();
 
             rolesProvider = async req =>
             {
-                var result = await HttpClientHelper.GetJsonFromContent<RoleList>("api/identity/rolelist", httpClient);
+                var result = await HttpClientHelper.GetJsonFromContent<RoleList>("/api/identity/rolelist", httpClient);
                 StateHasChanged();
                 return GridItemsProviderResult.From(items: result.data, totalItemCount: result.total);
             };

@@ -1,8 +1,15 @@
-@page "/logout"
+@page "/Account/Logout"
+
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject NavigationManager Navigation
-@inject ILogger<Logout> Logger
+@using BlazorShortUrl.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IEmailSender<ApplicationUser> EmailSender
+@inject ILogger<Register> Logger
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
 
 <h3>Logging out...</h3>
 
@@ -12,6 +19,6 @@
         Logger.LogInformation("User logout initiated.");
         await SignInManager.SignOutAsync();
         Logger.LogInformation("User successfully logged out.");
-        Navigation.NavigateTo("/");
+        NavigationManager.NavigateTo("/");
     }
 }

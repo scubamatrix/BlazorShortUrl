@@ -9,7 +9,7 @@ using BlazorShortUrl.Data;
 
 namespace BlazorShortUrl.Controllers
 {
-    // [Authorize]
+    [Authorize]
     [ApiController]
     [Route("api")]
     public class ShortUrlController : ControllerBase

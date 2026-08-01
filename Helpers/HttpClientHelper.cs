@@ -40,7 +40,7 @@ public class HttpClientHelper : IHttpClientHelper
         using var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
         // With a valid response, we can access the response body using the Content property.
-        if (response.IsSuccessStatusCode)
+        if (response is not null && response.IsSuccessStatusCode)
         {
             // perhaps check some headers before deserializing
 
@@ -64,7 +64,7 @@ public class HttpClientHelper : IHttpClientHelper
     // Send JSON data as part of a POST request
     public async Task PostJsonAsync<T>(string uri, HttpClient httpClient)
     {
-        var postResponse = await httpClient.PostAsJsonAsync<T>(uri, default(T));
+        var postResponse = await httpClient.PostAsJsonAsync<T>(uri, default);
         postResponse.EnsureSuccessStatusCode();
     }
 

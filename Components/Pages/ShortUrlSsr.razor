@@ -8,7 +8,6 @@
 @using BlazorShortUrl.Models
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.WebUtilities
 @using BlazorShortUrl.Data
 @using BlazorShortUrl.Services
 @using DotNetEnv
@@ -19,7 +18,7 @@
 @inject IShortUrlService ShortUrlService
 @* @inject IMapper AutoMapper *@
 @* @inject NavigationManager Navigator *@
-@inject UserManager<AppUser> UserManager
+@inject UserManager<ApplicationUser> UserManager
 @* @inject RoleManager<AppRole> RoleManager *@
 @* @inject AuthenticationStateProvider AuthenticationStateProvider *@
 
@@ -116,7 +115,6 @@ else
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? AuthStateTask { get; set; }
-
     private ShortUrlDto _editShortUrl = new();
     private string _editRowStyle = "none";
     private string _newUrl = string.Empty;
