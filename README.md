@@ -8,13 +8,15 @@ This repo is primarily based on [1], [2], and [3].
 
 The majority of the code was generated using the Visual Studio Professional and JeBrains Rider, and deployment to container using the tutorials in [7] and [8].
 
+## Changes for version 2.1.0
 
-## New Version
-
+- Fixes and updates for .NET 10
+- Upgrade ASP.NET Identity for .NET 10
+- Redo EF migrations for ASP.NET Identity 10
 - Fixed Login/Logout issues
+- Fixed issues with user management modals
 - Fixed API issues with IdentityController
-- TODO: Finish notes here
-
+- Refactor middleware configurations to improve performance
 
 ## Quickstart
 
