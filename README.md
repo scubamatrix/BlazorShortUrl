@@ -198,14 +198,14 @@ SQL Server EF Core Migrations (Windows):
 
 [11]: [Hosting ASP.NET Core images with Docker over HTTPS](https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-9.0)
 
+[5 .vscode Files That Standardize Your Whole Team](https://pub.towardsai.net/5-vscode-files-that-standardize-your-whole-team-f6e1e80fbf5f)
+
+[Implementing Registration, Login, and Logout Functionalities in Blazor Server](https://medium.com/@dusan.velimirovic/implementing-registration-login-and-logout-functionalities-in-blazor-server-1b7de2abc7b2)
+
 -----
+
+[HTTP Client in C#: Best Practices for Experts](https://medium.com/@iamprovidence/http-client-in-c-best-practices-for-experts-840b36d8f8c4)
 
 [How to securely reverse-proxy ASP.NET Core web apps](https://anthonysimmon.com/securely-reverse-proxy-aspnet-core-web-apps/)
 
 [Configure ASP.NET Core to work with proxy servers and load balancers](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-9.0)
-
-[Write custom ASP.NET Core middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/write?view=aspnetcore-9.0)
-
-[HTTP Client in C#: Best Practices for Experts](https://medium.com/@iamprovidence/http-client-in-c-best-practices-for-experts-840b36d8f8c4)
-
-[5 .vscode Files That Standardize Your Whole Team](https://pub.towardsai.net/5-vscode-files-that-standardize-your-whole-team-f6e1e80fbf5f)
