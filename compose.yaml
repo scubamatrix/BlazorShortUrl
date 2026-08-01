@@ -1,4 +1,6 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+# compose.yaml
+# Please refer https://aka.ms/HTTPSinContainer on how to setup
+# an https developer certificate for your ASP.NET Core service.
 
 services:
   blazorshorturl:
@@ -9,7 +11,6 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=$APP_ENVIRONMENT
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=$APP_FORWARD_HEADERS
-      # - ASPNETCORE_URLS=$BASE_ADDRESS
       - ASPNETCORE_PORT=$APP_SERVER_PORT
       - BUILD_PLATFORM=$APP_PLATFORM
       - AppDbContext=$AppDbContext
