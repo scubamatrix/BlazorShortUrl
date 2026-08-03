@@ -89,8 +89,8 @@ try
         SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey)
     };
 
-    var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
-    // var baseAddress = Env.GetString("BASE_ADDRESS");
+    // var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
+    var baseAddress = Env.GetString("BASE_ADDRESS");
     Log.Information($"BaseAddress: {baseAddress}");
 
     // Register named HttpClient for Identity API
