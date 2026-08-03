@@ -54,7 +54,8 @@
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj"
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj",
+                // "configureSsl": true
             }
         },
         {
@@ -74,7 +75,7 @@
                 "pull": true
             },
             "netCore": {
-                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj"
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj",
             }
         },
         {
@@ -83,10 +84,14 @@
             "dependsOn": [
                 "docker-build: debug"
             ],
-            "dockerRun": {},
+            "dockerRun": {
+                "env": {
+                    "ASPNETCORE_URLS": "https://+:7100;http://+:5100"
+                }
+            },
             "netCore": {
                 "appProject": "${workspaceFolder}/BlazorShortUrl.csproj",
-                "enableDebugging": true
+                "enableDebugging": true,
             }
         },
         {

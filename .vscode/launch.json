@@ -11,6 +11,7 @@
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             "serverReadyAction": {
+                "action": "openExternally",
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
@@ -30,8 +31,13 @@
             "type": "docker",
             "request": "launch",
             "preLaunchTask": "docker-run: debug",
+            "dockerServerReadyAction": {
+                // "action": "openExternally",
+                // "uriFormat": "%s://localhost:%s/WeatherForecast"
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
             "netCore": {
-                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj"
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj",
             }
         },
         //
