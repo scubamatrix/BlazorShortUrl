@@ -265,6 +265,7 @@ __pycache__/
 
 # Files to ignore
 .env
+env_dockhand
 
 # appsettings.json
 # appsettings.*.json
