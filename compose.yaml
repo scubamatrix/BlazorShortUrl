@@ -10,6 +10,8 @@ services:
       context: .
       dockerfile: ./Dockerfile
     # env_file: .env
+    group_add:
+      - "$PODMAN_SOCK_GID"
     environment:
       - BUILD_PLATFORM=$APP_PLATFORM
       - ASPNETCORE_ENVIRONMENT=$APP_ENVIRONMENT
@@ -31,9 +33,7 @@ services:
 # volumes:
 #   - /opt/BlazorShortUrl/logs:/logs
 
-
 networks:
   default:
     name: dockhand
     external: true
-  
