@@ -20,5 +20,5 @@ services:
       - ADMIN_PASSWORD=$ADMIN_PASSWORD
       - API_KEY=$API_KEY
       - BASE_ADDRESS=$BASE_ADDRESS
-    ports:
-      - $APP_SERVER_PORT:$APP_SERVER_PORT
+    # ports:
+    #   - $APP_SERVER_PORT:$APP_SERVER_PORT
