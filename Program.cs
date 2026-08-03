@@ -86,7 +86,8 @@ try
     {
         SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey)
     };
-    var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
+    // var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
+    var baseAddress = httpBaseUriAccessor.GetHttpUrl();
     baseAddress = Env.GetString("BASE_ADDRESS");
     Log.Information($"BaseAddress: {baseAddress}");
 
@@ -172,6 +173,17 @@ try
     // Configure web application
     var app = builder.Build();
 
+    //
+    // Configure request pipeline (middleware).
+    //
+    // Keep Lightweight Middleware Early.
+    // Middleware registered earlier executes for every request.
+    // Each middleware has a specific responsibility and changing the order
+    // can affect both functionality and performance.
+
+    app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+    app.UseForwardedHeaders();
+
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -202,24 +214,14 @@ try
         // The browser forces all communication over HTTPS.
         // The default HSTS value is 30 days.
         // You may want to change this for production scenarios (https://aka.ms/aspnetcore-hsts).
-        app.UseHsts();
+        // app.UseHsts();
     }
 
-    //
-    // Configure request pipeline (middleware).
-    //
-    // Keep Lightweight Middleware Early.
-    // Middleware registered earlier executes for every request.
-    // Each middleware has a specific responsibility and changing the order
-    // can affect both functionality and performance.
+    app.UseHttpsRedirection();
+    app.MapStaticAssets();
 
     // Write streamlined request completion events rather than verbose from the framework.
     app.UseSerilogRequestLogging();
-
-    app.UseForwardedHeaders();
-    app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-    app.UseHttpsRedirection();
-    app.MapStaticAssets();
 
     // The ordering is important here
     app.UseAuthentication();
