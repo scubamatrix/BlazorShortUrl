@@ -8,6 +8,8 @@ This repo is primarily based on [1], [2], and [3].
 
 The majority of the code was generated using the Visual Studio Code and deployment to container using the tutorials in [7].
 
+The User Management feature is based on code from [3], [9], and [10].
+
 ## Changes for version 2.1.0
 
 - Added Docker container support
@@ -21,6 +23,14 @@ The majority of the code was generated using the Visual Studio Code and deployme
 
 ## Quickstart
 
+### Step 1: Create .env file
+
+Rename .env_sample to .env and configure environment variables for your application.
+
+### Step 2: Setup develpment SSL certificate (optional)
+
+This step applies to development environment.
+
 When starting a new .NET project, it is often an exercise in patience to find the correct syntax for the SQL Server Connection String.
 
 ```bash
@@ -31,7 +41,7 @@ When starting a new .NET project, it is often an exercise in patience to find th
     dotnet restore
 ```
 
-Generate a certificate and configure the local machine to trust the certificate [8]:
+Generate a certificate and configure the local machine to trust the certificate [11]:
 
 ```bash
     dotnet dev-certs https --clean
@@ -42,13 +52,26 @@ Generate a certificate and configure the local machine to trust the certificate 
 
 In the preceding code, replace `$CREDENTIAL_PLACEHOLDER` with the password where the password must match the password used for the certificate.
 
-### User Management
+### Step 3: Compile the code and verify settings
 
-The User Management feature is based on code from [3], [9], and [10].
+```bash
+    dotnet build
+```
 
-### Details for Troubleshooting
+### Step 4: Run the application or container
 
-Here is a summary of the main steps required to manually reproduce the project with may help in troubleshooting any problems.
+```bash
+    # Run the application
+    dotnet run
+    dotnet watch
+
+    # Run the container
+    docker-compose up --build
+```
+
+## Troubleshooting
+
+Here is a summary of the main steps required to manually reproduce the project that may help in troubleshooting any problems.
 
 ### Install Entity Framework Core
 
