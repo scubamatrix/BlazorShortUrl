@@ -6,7 +6,7 @@ The code is using ASP.NET Core with Blazor server-side rendering (SSR) and SQL S
 
 This repo is primarily based on [1], [2], and [3].
 
-The majority of the code was generated using the Visual Studio Professional and JeBrains Rider, and deployment to container using the tutorials in [7] and [8].
+The majority of the code was generated using the Visual Studio Code and deployment to container using the tutorials in [7].
 
 ## Changes for version 2.1.0
 
@@ -31,7 +31,7 @@ When starting a new .NET project, it is often an exercise in patience to find th
     dotnet restore
 ```
 
-Generate a certificate and configure the local machine to trust the certificate [11]:
+Generate a certificate and configure the local machine to trust the certificate [8]:
 
 ```bash
     dotnet dev-certs https --clean
@@ -183,23 +183,23 @@ SQL Server EF Core Migrations (Windows):
 
 [2]: C. McQuillan, "[Fast Builds: Make a URL Shortener With .NET](https://quill.codes/posts/fast-prototyping-url-shortener/)," Sept. 22, 2020.
 
-[3]: [Identity Manager Blazor United](https://github.com/mguinness/IdentityManagerBlazorUnited)
+[3]: https://github.com/mguinness/IdentityManagerBlazorUnited "Identity Manager Blazor United"
 
-[4]: [Installing Entity Framework Core](https://learn.microsoft.com/en-gb/ef/core/get-started/overview/install)
+[4]: https://learn.microsoft.com/en-gb/ef/core/get-started/overview/install "Installing Entity Framework Core"
 
-[5]: [Scaffold Identity in ASP.NET Core projects](https://learn.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-identity?view=aspnetcore-9.0&tabs=visual-studio)
+[5]: https://learn.microsoft.com/en-us/aspnet/core/security/authentication/scaffold-identity?view=aspnetcore-9.0&tabs=visual-studio "Scaffold Identity in ASP.NET Core projects"
 
-[6]: [Managing Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/managing?tabs=dotnet-core-cli)
+[6]: https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/managing?tabs=dotnet-core-cli "Managing Migrations"
 
-[7]: [ASP.NET Core in a container](https://code.visualstudio.com/docs/containers/quickstart-aspnet-core)
+[7]: https://code.visualstudio.com/docs/containers/quickstart-aspnet-core "ASP.NET Core in a container"
 
-[8]: [ASP.NET Core Development with Docker](https://www.jetbrains.com/guide/dotnet/tutorials/docker-dotnet/aspnet-development-docker/)
+[8]: https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-9.0 "Hosting ASP.NET Core images with Docker over HTTPS"
 
-[9]: [Implement API Key Authentication in ASP.NET Core](https://code-maze.com/aspnetcore-api-key-authentication/)
+[9]: https://code-maze.com/aspnetcore-api-key-authentication/ "Implement API Key Authentication in ASP.NET Core"
 
-[10]: [Sending and Receiving JSON using HttpClient with System.Net.Http.Json](https://www.stevejgordon.co.uk/sending-and-receiving-json-using-httpclient-with-system-net-http-json)
+[10]: https://www.stevejgordon.co.uk/sending-and-receiving-json-using-httpclient-with-system-net-http-json "Sending and Receiving JSON using HttpClient with System.Net.Http.Json"
 
-[11]: [Hosting ASP.NET Core images with Docker over HTTPS](https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-9.0)
+[11]: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-9.0 "Configure ASP.NET Core to work with proxy servers and load balancers"
 
 [5 .vscode Files That Standardize Your Whole Team](https://pub.towardsai.net/5-vscode-files-that-standardize-your-whole-team-f6e1e80fbf5f)
 
@@ -207,8 +207,8 @@ SQL Server EF Core Migrations (Windows):
 
 -----
 
+[Understanding launchSettings.json in .NET](https://www.tvaidyan.com/2025/09/18/understanding-launchsettings-json-in-net/)
+
 [HTTP Client in C#: Best Practices for Experts](https://medium.com/@iamprovidence/http-client-in-c-best-practices-for-experts-840b36d8f8c4)
 
 [How to securely reverse-proxy ASP.NET Core web apps](https://anthonysimmon.com/securely-reverse-proxy-aspnet-core-web-apps/)
-
-[Configure ASP.NET Core to work with proxy servers and load balancers](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-9.0)
