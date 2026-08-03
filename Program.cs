@@ -32,7 +32,7 @@ try
         .ReadFrom.Configuration(config)
         .CreateLogger();
 
-    Log.Information("Serilog is starting");
+    Log.Information("Serilog is starting ...");
     Log.Information($"Environment is {env}");
 
     var builder = WebApplication.CreateBuilder(args);
@@ -46,10 +46,11 @@ try
             "[{@t:HH:mm:ss} {@l:u3}{#if @tr is not null} ({substring(@tr,0,4)}:{substring(@sp,0,4)}){#end}] {@m}\n{@x}",
             theme: TemplateTheme.Code)));
 
+    Log.Information("Serilog is running");
+
     string basedir = AppContext.BaseDirectory;
     Environment.SetEnvironmentVariable("BASEDIR", basedir);
 
-    Log.Information($"APP_URL: {Env.GetString("APP_URL")}");
     Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
     Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
 
@@ -82,13 +83,14 @@ try
     builder.Services.AddHttpContextAccessor();
 
     // Add HttpClient for local API calls to IdentityController.
+    // TODO: This is not working with Docker container.
     var httpBaseUriAccessor = new HttpBaseUrlAccessor()
     {
         SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey)
     };
-    // var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
-    var baseAddress = httpBaseUriAccessor.GetHttpUrl();
-    baseAddress = Env.GetString("BASE_ADDRESS");
+
+    var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
+    // var baseAddress = Env.GetString("BASE_ADDRESS");
     Log.Information($"BaseAddress: {baseAddress}");
 
     // Register named HttpClient for Identity API
@@ -125,9 +127,9 @@ try
 
     // Need to remove quotes when using .env file ??
     // appDbContext = appDbContext.Replace("\"", string.Empty).Trim();
+
     Environment.SetEnvironmentVariable("AppDbContext", appDbContext);
     Environment.SetEnvironmentVariable("DataContext", dataContext);
-    // Log.Information($"init main AppDbContext: {appDbContext}");
 
     // Create LoggerFactory
     var logger = LoggerFactory.Create(logging =>
