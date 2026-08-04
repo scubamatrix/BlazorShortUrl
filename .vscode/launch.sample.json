@@ -1,0 +1,80 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}BlazorShortUrl.csproj",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": "Containers: .NET Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "dockerServerReadyAction": {
+                // "action": "openExternally",
+                // "uriFormat": "%s://localhost:%s/WeatherForecast"
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj"
+            }
+        },
+        {
+            "name": "C#: BlazorShortUrl [https]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/BlazorShortUrl.csproj",
+            "launchConfigurationId": "TargetFramework=;https"
+        },
+        {
+            "name": "C#: BlazorShortUrl [http]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/BlazorShortUrl.csproj",
+            "launchConfigurationId": "TargetFramework=;http"
+        },
+        //
+        // Full-stack React/Next.js example
+        //
+        {
+            "name": "Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/src"
+        },
+        {
+            "name": "Next.js: debug server-side",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+            "env": {
+                "NODE_OPTIONS": "--inspect"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full Stack Debug",
+            "configurations": ["Next.js: debug server-side", "Launch Chrome"],
+            "stopAll": true
+        }
+    ]
+}

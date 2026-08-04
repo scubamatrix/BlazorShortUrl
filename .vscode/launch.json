@@ -1,77 +1,40 @@
 {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (web)",
-            "type": "coreclr",
+            "name": "Containers: .NET Container SDK",
+            "type": "docker",
             "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net10.0/BlazorShortUrl.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "stopAtEntry": false,
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+            "netCore": {
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj",
+                "buildWithSdk": true
             }
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
         },
         {
             "name": "Containers: .NET Launch",
             "type": "docker",
             "request": "launch",
             "preLaunchTask": "docker-run: debug",
-            "dockerServerReadyAction": {
-                // "action": "openExternally",
-                // "uriFormat": "%s://localhost:%s/WeatherForecast"
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
             "netCore": {
-                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj",
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj"
             }
         },
-        //
-        // Full-stack React/Next.js example
-        //
         {
-            "name": "Launch Chrome",
-            "type": "chrome",
+            "name": "C#: BlazorShortUrl [https]",
+            "type": "dotnet",
             "request": "launch",
-            "url": "http://localhost:3000",
-            "webRoot": "${workspaceFolder}/src"
+            "projectPath": "${workspaceFolder}/BlazorShortUrl.csproj",
+            "launchConfigurationId": "TargetFramework=;https"
         },
         {
-            "name": "Next.js: debug server-side",
-            "type": "node",
+            "name": "C#: BlazorShortUrl [http]",
+            "type": "dotnet",
             "request": "launch",
-            "runtimeExecutable": "npm",
-            "runtimeArgs": [
-                "run",
-                "dev"
-            ],
-            "env": {
-                "NODE_OPTIONS": "--inspect"
-            }
-        }
-    ],
-    "compounds": [
-        {
-            "name": "Full Stack Debug",
-            "configurations": [
-                "Next.js: debug server-side",
-                "Launch Chrome"
-            ],
-            "stopAll": true
-        }
+            "projectPath": "${workspaceFolder}/BlazorShortUrl.csproj",
+            "launchConfigurationId": "TargetFramework=;http"
+        },
     ]
 }

@@ -1,0 +1,44 @@
+//
+// expose package.json scripts that can be reference in launch.json (preLaunchTask)
+//
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": ["build"],
+            "dockerBuild": {
+                "tag": "blazorshorturl:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj"
+                // "configureSsl": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": ["docker-build: debug"],
+            "dockerRun": {
+                "env": {
+                    "ASPNETCORE_URLS": "https://+:7100;http://+:5100"
+                },
+                "ports": [
+                    {
+                        "hostPort": 5100,
+                        "containerPort": 5100
+                    }
+                ]
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/BlazorShortUrl.csproj",
+                "enableDebugging": true
+            }
+        }
+    ]
+}
