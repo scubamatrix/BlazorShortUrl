@@ -36,5 +36,5 @@ services:
 
 networks:
   default:
-    name: podman
+    name: dockhand
     external: true
