@@ -34,7 +34,7 @@ services:
 # volumes:
 #   - /opt/BlazorShortUrl/logs:/logs
 
-networks:
-  default:
-    name: dockhand
-    external: true
+# networks:
+#   default:
+#     name: dockhand
+#     external: true
