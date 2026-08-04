@@ -9,8 +9,6 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-      args:
-        - configuration=Debug
     # env_file: .env
     ports:
       - 5100:5100
@@ -28,8 +26,6 @@ services:
       - APP_UID:$APP_UID
       - BASE_ADDRESS=$BASE_ADDRESS
       - LOG_LEVEL:$LOG_LEVEL
-    volumes:
-      - ~/.vsdbg:/remote_debugger:rw
 
 # volumes:
 #   - /opt/BlazorShortUrl/logs:/logs
