@@ -1,14 +1,11 @@
-# Dockerfile
-# TODO: Refactor using Dockerfile best practices
-#
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
-EXPOSE 5100
+# EXPOSE 5100
 # EXPOSE 7100
 
-# ENV ASPNETCORE_URLS=https://+:7100;http://+:5100
+# ENV ASPNETCORE_URLS=http://+:5100
 
-USER app
+# USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src

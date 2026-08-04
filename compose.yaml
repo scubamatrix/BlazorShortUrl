@@ -9,15 +9,17 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+      args:
+        - configuration=Debug
     # env_file: .env
-    group_add:
-      - "$PODMAN_SOCK_GID"
+    ports:
+      - 5100:5100
     environment:
       - BUILD_PLATFORM=$APP_PLATFORM
-      - ASPNETCORE_ENVIRONMENT=$APP_ENVIRONMENT
-      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=$APP_FORWARD_HEADERS
-      - ASPNETCORE_HTTP_PORTS=$ASPNETCORE_HTTP_PORTS
-      # - ASPNETCORE_URLS=$ASPNETCORE_URLS
+      - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=$ASPNETCORE_FORWARDEDHEADERS_ENABLED
+      # - ASPNETCORE_HTTP_PORTS=$ASPNETCORE_HTTP_PORTS
+      - ASPNETCORE_URLS=$ASPNETCORE_URLS
       - AppDbContext=$AppDbContext
       - DataContext=$DataContext
       - ADMIN_EMAIL=$ADMIN_EMAIL
@@ -26,14 +28,13 @@ services:
       - APP_UID:$APP_UID
       - BASE_ADDRESS=$BASE_ADDRESS
       - LOG_LEVEL:$LOG_LEVEL
-
-# ports:
-#   - $APP_SERVER_PORT:$APP_SERVER_PORT
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
 
 # volumes:
 #   - /opt/BlazorShortUrl/logs:/logs
 
 networks:
   default:
-    name: dockhand
+    name: podman
     external: true
