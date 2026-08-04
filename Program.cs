@@ -51,9 +51,6 @@ try
     string basedir = AppContext.BaseDirectory;
     Environment.SetEnvironmentVariable("BASEDIR", basedir);
 
-    Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
-    Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
-
     // TODO: Fix needed for Traefik
     // Configure ASP.NET Core to work with proxy servers and load balancers
     builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -89,9 +86,18 @@ try
         SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey)
     };
 
-    // var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
-    var baseAddress = Env.GetString("BASE_ADDRESS");
+    var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
+    // var baseAddress = Env.GetString("BASE_ADDRESS");
+    Log.Information($"ASPNETCORE_ENVIRONMENT: {Env.GetString("ASPNETCORE_ENVIRONMENT")}");
+    Log.Information($"ASPNETCORE_URLS: {Env.GetString("ASPNETCORE_URLS")}");
+    Log.Information($"ASPNETCORE_HTTP_PORTS: {Env.GetString("ASPNETCORE_HTTP_PORTS")}");
+    Log.Information($"ASPNETCORE_HTTPS_PORTS: {Env.GetString("ASPNETCORE_HTTPS_PORTS")}");
+    Log.Information($"APP_PLATFORM: {Env.GetString("APP_PLATFORM")}");
+
+    Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
     Log.Information($"BaseAddress: {baseAddress}");
+    Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
+    Log.Information($"LOG_LEVEL: {Env.GetString("LOG_LEVEL")}");
 
     // Register named HttpClient for Identity API
     var httpClientBuilder = builder.Services
@@ -175,17 +181,6 @@ try
     // Configure web application
     var app = builder.Build();
 
-    //
-    // Configure request pipeline (middleware).
-    //
-    // Keep Lightweight Middleware Early.
-    // Middleware registered earlier executes for every request.
-    // Each middleware has a specific responsibility and changing the order
-    // can affect both functionality and performance.
-
-    app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
-    app.UseForwardedHeaders();
-
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())
     {
@@ -219,19 +214,29 @@ try
         // app.UseHsts();
     }
 
-    app.UseHttpsRedirection();
-    app.MapStaticAssets();
+    //
+    // Configure request pipeline (middleware).
+    //
+    // Keep Lightweight Middleware Early.
+    // Middleware registered earlier executes for every request.
+    // Each middleware has a specific responsibility and changing the order
+    // can affect both functionality and performance.
+
+    app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+    app.UseForwardedHeaders();
+    // app.UseHttpsRedirection();
+    app.UseAntiforgery();
 
     // Write streamlined request completion events rather than verbose from the framework.
-    app.UseSerilogRequestLogging();
+    // app.UseSerilogRequestLogging();
 
     // The ordering is important here
     app.UseAuthentication();
     app.UseAuthorization();
-    app.UseAntiforgery();
     // app.UseRateLimiter();
 
     app.MapControllers();
+    app.MapStaticAssets();
 
     app.MapRazorComponents<BlazorShortUrl.Components.App>()
         .AddInteractiveServerRenderMode()
