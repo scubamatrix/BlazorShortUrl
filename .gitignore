@@ -272,7 +272,6 @@ env_dockhand
 # settings.json
 
 Dockerfile.*
-compose.*.yaml
 docker-compose.*.yml
 
 *.sublime-project

@@ -1,0 +1,41 @@
+# compose.debug.yaml
+#
+# Please refer https://aka.ms/HTTPSinContainer on how to setup
+# an https developer certificate for your ASP.NET Core service.
+
+services:
+  blazorshorturl:
+    image: blazorshorturl
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        - configuration=Debug
+    # env_file: .env
+    ports:
+      - 5100:5100
+    environment:
+      - BUILD_PLATFORM=Development
+      - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=$ASPNETCORE_FORWARDEDHEADERS_ENABLED
+      # - ASPNETCORE_HTTP_PORTS=$ASPNETCORE_HTTP_PORTS
+      - ASPNETCORE_URLS=$ASPNETCORE_URLS
+      - AppDbContext=$AppDbContext
+      - DataContext=$DataContext
+      - ADMIN_EMAIL=$ADMIN_EMAIL
+      - ADMIN_PASSWORD=$ADMIN_PASSWORD
+      - API_KEY=$API_KEY
+      - APP_UID:$APP_UID
+      - BASE_ADDRESS=$BASE_ADDRESS
+      - LOG_LEVEL:$LOG_LEVEL
+
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+
+# volumes:
+#   - /opt/BlazorShortUrl/logs:/logs
+
+# networks:
+#   default:
+#     name: dockhand
+#     external: true
