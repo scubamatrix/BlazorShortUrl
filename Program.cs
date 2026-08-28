@@ -89,11 +89,11 @@ try
     var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
     // var baseAddress = Env.GetString("BASE_ADDRESS");
     Log.Information($"ASPNETCORE_ENVIRONMENT: {Env.GetString("ASPNETCORE_ENVIRONMENT")}");
-    Log.Information($"ASPNETCORE_URLS: {Env.GetString("ASPNETCORE_URLS")}");
-    Log.Information($"ASPNETCORE_HTTP_PORTS: {Env.GetString("ASPNETCORE_HTTP_PORTS")}");
-    Log.Information($"ASPNETCORE_HTTPS_PORTS: {Env.GetString("ASPNETCORE_HTTPS_PORTS")}");
-    Log.Information($"APP_PLATFORM: {Env.GetString("APP_PLATFORM")}");
+    // Log.Information($"ASPNETCORE_URLS: {Env.GetString("ASPNETCORE_URLS")}");
+    // Log.Information($"ASPNETCORE_HTTP_PORTS: {Env.GetString("ASPNETCORE_HTTP_PORTS")}");
+    // Log.Information($"ASPNETCORE_HTTPS_PORTS: {Env.GetString("ASPNETCORE_HTTPS_PORTS")}");
 
+    Log.Information($"BUILD_PLATFORM: {Env.GetString("BUILD_PLATFORM")}");
     Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
     Log.Information($"BaseAddress: {baseAddress}");
     Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
