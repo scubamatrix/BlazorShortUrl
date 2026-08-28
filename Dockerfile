@@ -8,6 +8,7 @@ RUN mkdir -p /app/log
 # ENV ASPNETCORE_URLS=http://+:5100
 
 # USER app
+
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src
