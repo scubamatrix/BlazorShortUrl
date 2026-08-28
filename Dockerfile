@@ -1,5 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
+RUN mkdir -p /app/log
+
 # EXPOSE 5100
 # EXPOSE 7100
 
