@@ -20,7 +20,7 @@ public class HttpBaseUrlAccessor : IHttpBaseUrlAccessor
         }
         else
         {
-            return Env.GetString("BASE_ADDRESS") ?? string.Empty;
+            return Env.GetString("BASE_ADDRESS");
         }
     }
 
@@ -34,7 +34,7 @@ public class HttpBaseUrlAccessor : IHttpBaseUrlAccessor
         }
         else
         {
-            return Env.GetString("BASE_ADDRESS") ?? string.Empty;
+            return Env.GetString("BASE_ADDRESS");
         }
     }
 }
