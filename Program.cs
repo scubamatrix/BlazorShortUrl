@@ -97,7 +97,7 @@ try
     // TODO: BaseAddress is null ???
     Log.Information($"BUILD_PLATFORM: {Env.GetString("BUILD_PLATFORM")}");
     Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
-    Log.Information($"BaseAddress: {baseAddress}");
+    Log.Information($"BaseAddress hello: {baseAddress}");
     Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
     Log.Information($"LOG_LEVEL: {Env.GetString("LOG_LEVEL")}");
 
