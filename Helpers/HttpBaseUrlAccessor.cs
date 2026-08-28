@@ -1,3 +1,5 @@
+using DotNetEnv;
+
 namespace BlazorShortUrl.Helpers;
 
 /// <summary>
@@ -17,7 +19,7 @@ public class HttpBaseUrlAccessor : IHttpBaseUrlAccessor
         }
         else
         {
-            return string.Empty;
+            return Env.GetString("BASE_ADDRESS") ?? string.Empty;
         }
     }
 
@@ -31,7 +33,7 @@ public class HttpBaseUrlAccessor : IHttpBaseUrlAccessor
         }
         else
         {
-            return string.Empty;
+            return Env.GetString("BASE_ADDRESS") ?? string.Empty;
         }
     }
 }

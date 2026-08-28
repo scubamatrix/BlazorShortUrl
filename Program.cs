@@ -93,6 +93,7 @@ try
     // Log.Information($"ASPNETCORE_HTTP_PORTS: {Env.GetString("ASPNETCORE_HTTP_PORTS")}");
     // Log.Information($"ASPNETCORE_HTTPS_PORTS: {Env.GetString("ASPNETCORE_HTTPS_PORTS")}");
 
+    // TODO: BaseAddress is null ???
     Log.Information($"BUILD_PLATFORM: {Env.GetString("BUILD_PLATFORM")}");
     Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
     Log.Information($"BaseAddress: {baseAddress}");
