@@ -10,22 +10,22 @@ services:
       context: .
       dockerfile: ./Dockerfile
     # env_file: .env
-    ports:
-      - 5100:5100
+    # ports:
+    #   - 5100:5100
     environment:
-      - BUILD_PLATFORM=$APP_PLATFORM
-      - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
-      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=$ASPNETCORE_FORWARDEDHEADERS_ENABLED
+      - BUILD_PLATFORM=${APP_PLATFORM}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=${ASPNETCORE_FORWARDEDHEADERS_ENABLED}
       # - ASPNETCORE_HTTP_PORTS=$ASPNETCORE_HTTP_PORTS
-      - ASPNETCORE_URLS=$ASPNETCORE_URLS
-      - AppDbContext=$AppDbContext
-      - DataContext=$DataContext
-      - ADMIN_EMAIL=$ADMIN_EMAIL
-      - ADMIN_PASSWORD=$ADMIN_PASSWORD
-      - API_KEY=$API_KEY
-      - APP_UID:$APP_UID
-      - BASE_ADDRESS=$BASE_ADDRESS
-      - LOG_LEVEL:$LOG_LEVEL
+      # - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - AppDbContext=${AppDbContext}
+      - DataContext=${DataContext}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - API_KEY=${API_KEY}
+      - APP_UID:${APP_UID}
+      - BASE_ADDRESS=${BASE_ADDRESS}
+      - LOG_LEVEL:${LOG_LEVEL}
 
 # volumes:
 #   - /opt/BlazorShortUrl/logs:/logs
