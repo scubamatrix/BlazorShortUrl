@@ -1,4 +1,5 @@
 using DotNetEnv;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlazorShortUrl.Helpers;
 
@@ -12,7 +13,7 @@ public class HttpBaseUrlAccessor : IHttpBaseUrlAccessor
     public string? GetHttpsUrl()
     {
         string[]? urls;
-        if (SiteUrlString is not null)
+        if (!SiteUrlString.IsNullOrEmpty())
         {
             urls = SiteUrlString.Split(";");
             return urls.FirstOrDefault(g => g.StartsWith("https://"));
@@ -26,7 +27,7 @@ public class HttpBaseUrlAccessor : IHttpBaseUrlAccessor
     public string? GetHttpUrl()
     {
         string[]? urls;
-        if (SiteUrlString is not null)
+        if (!SiteUrlString.IsNullOrEmpty())
         {
             urls = SiteUrlString.Split(";");
             return urls.FirstOrDefault(g => g.StartsWith("http://"));
