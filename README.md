@@ -1,14 +1,22 @@
 # BlazorShortUrl
 
-This repo is a url shortener web application that is similar in purpose to tinyurl and other paid SaaS applications.
-
-The code is using ASP.NET Core with Blazor server-side rendering (SSR) and SQL Server for Linux remote database that has been installed and configured separately.
+This repo is a url shortener web application including login and custom user management UI using ASP.NET Core with Blazor server-side rendering (SSR), ASP.NET Core Identity, .NET Core Entity Framework, and SQL Server for Linux.
 
 This repo is primarily based on [1], [2], and [3].
 
 The majority of the code was generated using the Visual Studio Code and deployment to container using the tutorials in [7].
 
-The User Management feature is based on code from [3], [9], and [10].
+The User Management UI is based on code from [3], [8], and [9].
+
+## Key Features
+
+- Login and custom user management UI using ASP.NET Core Identity
+
+- ASP.NET Core with Blazor server-side rendering (SSR)
+
+- SQL Server for Linux remote database that has been installed and configured separately
+
+- Support for deployment using Docker containers (recommended)
 
 ## Changes for version 2.1.0
 
@@ -41,7 +49,7 @@ When starting a new .NET project, it is often an exercise in patience to find th
     dotnet restore
 ```
 
-Generate a certificate and configure the local machine to trust the certificate [11]:
+Generate a certificate and configure the local machine to trust the certificate [10]:
 
 ```bash
     dotnet dev-certs https --clean
@@ -216,22 +224,8 @@ SQL Server EF Core Migrations (Windows):
 
 [7]: https://code.visualstudio.com/docs/containers/quickstart-aspnet-core "ASP.NET Core in a container"
 
-[8]: https://learn.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-9.0 "Hosting ASP.NET Core images with Docker over HTTPS"
+[8]: https://code-maze.com/aspnetcore-api-key-authentication/ "Implement API Key Authentication in ASP.NET Core"
 
-[9]: https://code-maze.com/aspnetcore-api-key-authentication/ "Implement API Key Authentication in ASP.NET Core"
+[9]: https://www.stevejgordon.co.uk/sending-and-receiving-json-using-httpclient-with-system-net-http-json "Sending and Receiving JSON using HttpClient with System.Net.Http.Json"
 
-[10]: https://www.stevejgordon.co.uk/sending-and-receiving-json-using-httpclient-with-system-net-http-json "Sending and Receiving JSON using HttpClient with System.Net.Http.Json"
-
-[11]: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-9.0 "Configure ASP.NET Core to work with proxy servers and load balancers"
-
-[5 .vscode Files That Standardize Your Whole Team](https://pub.towardsai.net/5-vscode-files-that-standardize-your-whole-team-f6e1e80fbf5f)
-
-[Implementing Registration, Login, and Logout Functionalities in Blazor Server](https://medium.com/@dusan.velimirovic/implementing-registration-login-and-logout-functionalities-in-blazor-server-1b7de2abc7b2)
-
------
-
-[Understanding launchSettings.json in .NET](https://www.tvaidyan.com/2025/09/18/understanding-launchsettings-json-in-net/)
-
-[HTTP Client in C#: Best Practices for Experts](https://medium.com/@iamprovidence/http-client-in-c-best-practices-for-experts-840b36d8f8c4)
-
-[How to securely reverse-proxy ASP.NET Core web apps](https://anthonysimmon.com/securely-reverse-proxy-aspnet-core-web-apps/)
+[10]: https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-9.0 "Configure ASP.NET Core to work with proxy servers and load balancers"
