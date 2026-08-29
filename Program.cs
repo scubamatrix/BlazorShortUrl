@@ -80,9 +80,11 @@ try
     builder.Services.AddHttpContextAccessor();
 
     // Add HttpClient for local API calls to IdentityController.
+    // TODO: This is not working with Docker container ???
     var httpBaseUriAccessor = new HttpBaseUrlAccessor()
     {
-        SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey).Trim()
+        // SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey).Trim()
+        SiteUrlString = string.Empty
     };
 
     var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
