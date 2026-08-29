@@ -80,21 +80,18 @@ try
     builder.Services.AddHttpContextAccessor();
 
     // Add HttpClient for local API calls to IdentityController.
-    // TODO: This is not working with Docker container.
     var httpBaseUriAccessor = new HttpBaseUrlAccessor()
     {
-        // SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey).Trim()
-        SiteUrlString = Env.GetString("BASE_ADDRESS")
+        SiteUrlString = builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey).Trim()
     };
 
-    // var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
-    var baseAddress = Env.GetString("BASE_ADDRESS");
+    var baseAddress = httpBaseUriAccessor.GetHttpsUrl() ?? httpBaseUriAccessor.GetHttpUrl();
+    // var baseAddress = Env.GetString("BASE_ADDRESS");
     Log.Information($"ASPNETCORE_ENVIRONMENT: {Env.GetString("ASPNETCORE_ENVIRONMENT")}");
     // Log.Information($"ASPNETCORE_URLS: {Env.GetString("ASPNETCORE_URLS")}");
     // Log.Information($"ASPNETCORE_HTTP_PORTS: {Env.GetString("ASPNETCORE_HTTP_PORTS")}");
     // Log.Information($"ASPNETCORE_HTTPS_PORTS: {Env.GetString("ASPNETCORE_HTTPS_PORTS")}");
 
-    // TODO: BaseAddress is null ???
     Log.Information($"BUILD_PLATFORM: {Env.GetString("BUILD_PLATFORM")}");
     Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
     Log.Information($"BaseAddress hello: {baseAddress}");
