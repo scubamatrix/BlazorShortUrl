@@ -8,13 +8,6 @@ namespace BlazorShortUrl.Helpers;
 /// </summary>
 public class HttpClientHelper : IHttpClientHelper
 {
-    private readonly HttpClient? _client;
-
-    public HttpClientHelper(HttpClient client)
-    {
-        _client = client;
-    }
-
     public async Task<T?> GetFromJsonAsync<T>(string uri, HttpClient httpClient)
     {
         try

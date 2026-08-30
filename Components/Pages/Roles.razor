@@ -150,7 +150,6 @@
 
     private static async Task PostJsonHttpClient<T>(string uri, HttpClient httpClient, T value)
     {
-        // var postUser = new User { Name = "Steve Gordon" };
         var postResponse = await httpClient.PostAsJsonAsync(uri, value);
         postResponse.EnsureSuccessStatusCode();
     }
