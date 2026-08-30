@@ -97,7 +97,7 @@ try
 
     Log.Information($"BUILD_PLATFORM: {Env.GetString("BUILD_PLATFORM")}");
     Log.Information($"BASE_ADDRESS: {Env.GetString("BASE_ADDRESS")}");
-    Log.Information($"BaseAddress hello: {baseAddress}");
+    Log.Information($"BaseAddress: {baseAddress}");
     Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
     Log.Information($"LOG_LEVEL: {Env.GetString("LOG_LEVEL")}");
 
