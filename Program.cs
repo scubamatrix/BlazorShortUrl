@@ -221,11 +221,11 @@ try
 
     app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
     app.UseForwardedHeaders();
-    // app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
     app.UseAntiforgery();
 
     // Write streamlined request completion events rather than verbose from the framework.
-    // app.UseSerilogRequestLogging();
+    app.UseSerilogRequestLogging();
 
     // The ordering is important here
     app.UseAuthentication();
