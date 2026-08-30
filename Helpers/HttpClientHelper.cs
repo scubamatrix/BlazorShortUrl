@@ -3,12 +3,19 @@ using System.Text.Json;
 namespace BlazorShortUrl.Helpers;
 
 /// <summary>
-/// TODO: Refactor HttpClient use in application??
+/// TODO: Refactor HttpClient use in application ???
 /// Utility class for HttpClient error handling.
 /// </summary>
 public class HttpClientHelper : IHttpClientHelper
 {
-    public async Task<T?>  GetFromJsonAsync<T>(string uri, HttpClient httpClient)
+    private readonly HttpClient? _client;
+
+    public HttpClientHelper(HttpClient client)
+    {
+        _client = client;
+    }
+
+    public async Task<T?> GetFromJsonAsync<T>(string uri, HttpClient httpClient)
     {
         try
         {

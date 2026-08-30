@@ -14,6 +14,7 @@ using BlazorShortUrl.Data;
 using BlazorShortUrl.Helpers;
 using BlazorShortUrl.Middleware;
 using BlazorShortUrl.Services;
+using System.Net;
 
 
 // Load environment variables from JSON and .env
@@ -100,22 +101,17 @@ try
     Log.Information($"BASEDIR: {Env.GetString("BASEDIR")}");
     Log.Information($"LOG_LEVEL: {Env.GetString("LOG_LEVEL")}");
 
-    // Register named HttpClient for Identity API
+    // Register named client for Identity API
     var httpClientBuilder = builder.Services
         .AddHttpClient("IdentityController", client =>
         {
-            client.BaseAddress = new Uri(baseAddress);
+            client.DefaultRequestVersion = HttpVersion.Version20;
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestHeaders.Add("User-Agent", "BlazorShortUrl-IdentityController");
             client.DefaultRequestHeaders.Add("X-API-Key", Env.GetString("API_KEY"));
+            client.BaseAddress = new Uri(baseAddress);
         })
     .AddStandardResilienceHandler();
-
-    // TODO: Need to refactor IHttpClientFactory
-    // Create the HttpClient as a singleton instance
-    // builder.Services.AddSingleton(sp => sp.GetRequiredService<IHttpClientFactory>()
-    //     .CreateClient("IdentityController"));
-
 
     // Add API Key middleware
     builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
