@@ -32,7 +32,7 @@ public class ShortUrlRepository : IShortUrlRepository
     public async Task<ShortUrl> GetById(int id)
     {
         ShortUrl? shortUrl = await _db.ShortUrls.FindAsync(id);
-        
+
         if (shortUrl == null)
             throw new AppException("Url not found.");
 

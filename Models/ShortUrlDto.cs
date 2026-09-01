@@ -13,7 +13,7 @@ public class ShortUrlDto
     public string? TinyUrl { get; set; }
     public string? Description { get; set; }
 
-    public ShortUrlDto() {}
+    public ShortUrlDto() { }
 
     // Copy ShortUrl
     public ShortUrlDto(ShortUrl shortUrl)

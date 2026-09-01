@@ -78,7 +78,7 @@ else
                         </a>
                     </td>
                     <td>
-                        <a href="@shortUrl.TinyUrl">@shortUrl.TinyUrl</a>
+                        <a href="@($"{_appUrl}{shortUrl.TinyUrl}")">@_appUrl@shortUrl.TinyUrl</a>
                     </td>
                     <td>
                        @shortUrl.Description
@@ -162,7 +162,8 @@ else
                     UserId = x.UserId,
                     UserName = _userName,
                     Url = x.Url,
-                    TinyUrl = $"{_appUrl}{x.TinyUrl}",
+                    TinyUrl = x.TinyUrl,
+                    @* TinyUrl = $"{_appUrl}{x.UrlChunk}", *@
                     Description = x.Description,
                 };
             _shortUrls = queryShortUrls.ToList();
