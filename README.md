@@ -11,11 +11,8 @@ The User Management UI is based on code from [3], [8], and [9].
 ## Key Features
 
 - Login and custom user management UI using ASP.NET Core Identity
-
 - ASP.NET Core with Blazor server-side rendering (SSR)
-
 - SQL Server for Linux remote database that has been installed and configured separately
-
 - Support for deployment using Docker containers (recommended)
 
 ## Changes for version 2.1.0
@@ -33,7 +30,7 @@ The User Management UI is based on code from [3], [8], and [9].
 
 ### Step 1: Create .env file
 
-Rename .env_sample to .env and configure environment variables for your application.
+Rename `.env_sample` to `.env` and configure environment variables for your application.
 
 ### Step 2: Setup develpment SSL certificate (optional)
 
